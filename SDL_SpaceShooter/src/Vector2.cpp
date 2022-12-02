@@ -100,6 +100,12 @@ Vector2 operator*(const Vector2& v1, const float scalar)
 	return v3;
 }
 
+Vector2 operator*(const float scalar, const Vector2& v1)
+{
+	Vector2 v3 = Vector2(v1.x * scalar, v1.y * scalar);
+	return v3;
+}
+
 Vector2& Vector2::operator*=(const float scalar)
 {
 	return this->Multiply(scalar);

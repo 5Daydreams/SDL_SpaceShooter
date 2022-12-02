@@ -60,12 +60,18 @@ public:
 		velocity = Vector2(0.0f, 0.0f);
 	}
 
+	void Rotate(const float angle)
+	{
+		rotation = angle;
+	}
+
 	void Update() override
 	{
+		forward = Vector2(cos(rotation), sin(rotation));
+		right = Vector2(cos(rotation), sin(rotation));
 
+		Vector2 rotatedVelocity = velocity.x * right + velocity.y * forward;
 
-		rotation += 1;
 		position += velocity * speed;
-		//std::cout << "pos: " << position << "; vel: " << velocity << std::endl;
 	}
 };

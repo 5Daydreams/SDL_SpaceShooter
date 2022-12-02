@@ -29,6 +29,7 @@ public:
 
 	Vector2& Multiply(const float scalar);
 	friend Vector2 operator*(const Vector2& v1, const float scalar);
+	friend Vector2 operator*(const float scalar, const Vector2& v1);
 	Vector2& operator*=(const float scalar);
 
 	friend std::ostream& operator<<(std::ostream& stream, const Vector2& vec);
