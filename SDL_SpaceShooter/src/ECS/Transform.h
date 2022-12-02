@@ -2,16 +2,20 @@
 #include "Components.h"
 #include "Vector2.h"
 
-class TransformComponent : public Component
+class Transform : public Component
 {
 public:
 	Vector2 position;
-	Vector2 velocity;
+	float rotation = 0.0f;
 	Vector2 scale;
 
-	float speed = 2.2f;
+	Vector2 velocity;
+	float speed = 3.0f;
 
-	TransformComponent()
+	Vector2 forward = Vector2(cos(rotation), sin(rotation));
+	Vector2 right = Vector2(cos(rotation), sin(rotation));
+
+	Transform()
 	{
 		position.x = 0.0f;
 		position.y = 0.0f;
@@ -19,25 +23,25 @@ public:
 		scale.y = 1.0f;
 	}
 
-	TransformComponent(float x, float y)
+	Transform(float x, float y)
 	{
 		position.x = x;
 		position.y = y;
 	}
 
-	TransformComponent(Vector2 pos)
+	Transform(Vector2 pos)
 	{
 		position = pos;
 	}
 
-	TransformComponent(float x, float y, Vector2 scale)
+	Transform(float x, float y, Vector2 scale)
 	{
 		this->position.x = x;
 		this->position.y = y;
 		this->scale = scale;
 	}
 
-	TransformComponent(float xPos, float yPos, float xScale, float yScale)
+	Transform(float xPos, float yPos, float xScale, float yScale)
 	{
 		this->position.x = xPos;
 		this->position.y = yPos;
@@ -45,7 +49,7 @@ public:
 		this->scale.y = yScale;
 	}
 
-	TransformComponent(Vector2 pos, Vector2 scale)
+	Transform(Vector2 pos, Vector2 scale)
 	{
 		this->position = pos;
 		this->scale = scale;
@@ -58,6 +62,9 @@ public:
 
 	void Update() override
 	{
+
+
+		rotation += 1;
 		position += velocity * speed;
 		//std::cout << "pos: " << position << "; vel: " << velocity << std::endl;
 	}

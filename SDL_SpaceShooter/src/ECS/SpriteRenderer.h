@@ -2,29 +2,31 @@
 #include "Components.h"
 #include "SDL.h"
 
-class SpriteComponent : public Component
+class SpriteRenderer : public Component
 {
 private:
-	TransformComponent* transform;
+	Transform* transform;
 	SDL_Texture* texture;
 	SDL_Rect srcRect, destRect;
+	float rotation = 0.0f;
 
 public:
-	SpriteComponent() = default;
 
-	~SpriteComponent()
+	SpriteRenderer() = default;
+
+	~SpriteRenderer()
 	{
 		SDL_DestroyTexture(texture);
 	}
 
-	SpriteComponent(const char* path)
+	SpriteRenderer(const char* path)
 	{
 		texture = IMG_LoadTexture(Game::renderer, path);
 	}
 
 	void Init() override
 	{
-		transform = &entity->GetComponent<TransformComponent>();
+		transform = &entity->GetComponent<Transform>();
 
 		srcRect.x = srcRect.y = 0;
 		srcRect.w = 64;
@@ -39,8 +41,19 @@ public:
 		destRect.y = static_cast<int>(transform->position.y);
 	}
 
+	void RotateSprite(float angle)
+	{
+		rotation += angle;
+	}
+
+	void SetSpriteRotation(float angle)
+	{
+		rotation = angle;
+	}
+
 	void Draw()	override
 	{
-		SDL_RenderCopy(Game::renderer, texture, &srcRect, &destRect);
+		double finalRotation = transform->rotation + rotation;
+		SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, -finalRotation, NULL, SDL_FLIP_NONE);
 	}
 };

@@ -109,4 +109,14 @@ std::ostream& operator<<(std::ostream& stream, const Vector2& vec)
 {
 	stream << "(" << vec.x << "," << vec.y << ")";
 	return stream;
+
+}
+Vector2& Vector2::Rotate(const float radians)
+{
+	*this = Vector2(
+		cos(radians) * this->x - sin(radians) * this->y,
+		sin(radians) * this->x + cos(radians) * this->y
+	);
+
+	return *this;
 }

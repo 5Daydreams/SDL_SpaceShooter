@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-class ColliderComponent;
+class Collider2D;
 
 class Game
 {
@@ -24,7 +24,7 @@ public:
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
-	static std::vector<ColliderComponent*> colliders;
+	static std::vector<Collider2D*> colliders;
 	static void PrintSDLErrorLine();
 
 private:

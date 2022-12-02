@@ -103,7 +103,7 @@ public:
 };
 
 
-class Manager
+class ECSManager
 {
 private:
 	std::vector<std::unique_ptr<Entity>> entitiesList;

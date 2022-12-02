@@ -3,14 +3,69 @@
 #include "ECS.h"
 #include "Components.h"
 
-class ControllerComponent : public Component
+class KeyCallbacks
+{
+private:
+	SDL_KeyCode key;
+	bool currentlyHeld = false;
+
+public:
+
+	void UpdateKeyState()
+	{
+		bool keyMatches = Game::event.key.keysym.sym == key;
+
+		if (!keyMatches)
+		{
+			return;
+		}
+
+		bool oldState = currentlyHeld;
+
+		switch (Game::event.type)
+		{
+		case SDL_KEYDOWN:
+			currentlyHeld = true;
+			break;
+		case SDL_KEYUP:
+			currentlyHeld = false;
+			break;
+		default:
+			// KeyState doesn't change if it isn't up or down
+			break;
+		}
+
+		if (oldState != currentlyHeld)
+		{
+			if (currentlyHeld)
+			{
+				// OnKeyPressed();
+			}
+			else
+			{
+				// OnKeyReleased();
+			}
+		}
+		else // oldState == currentHeldState
+		{
+			if (currentlyHeld)
+			{
+				// OnKeyHeld();
+			}
+		}
+
+	}
+
+};
+
+class Input : public Component
 {
 public:
-	TransformComponent* transform;
+	Transform* transform;
 
 	void Init() override
 	{
-		transform = &entity->GetComponent<TransformComponent>();
+		transform = &entity->GetComponent<Transform>();
 	}
 
 	void Update() override

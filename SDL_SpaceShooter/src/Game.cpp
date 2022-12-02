@@ -1,17 +1,13 @@
 #include "Game.h"
-#include "Map.h"
 #include "ECS/Components.h"
 #include "Vector2.h"
 #include "Collision.h"
 
-Map* map;
-Manager manager;
-
+std::vector<Collider2D*> Game::colliders;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
-std::vector<ColliderComponent*> Game::colliders;
-
+ECSManager manager;
 
 auto& player(manager.AddEntity());
 auto& wall(manager.AddEntity());
@@ -61,24 +57,16 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	}
 
 
-	map = new Map();
+	player.AddComponent<Transform>(50.0f, 50.0f, Vector2(1.0f, 1.0f));
+	const std::string stickman_texture_path = "assets/spaceship.png";
+	player.AddComponent<SpriteRenderer>(stickman_texture_path.c_str());
+	player.AddComponent<Input>();
+	player.AddComponent<Collider2D>("player");
 
-	tile0.AddComponent<TileComponent>(200, 200, 64, 64, 0);
-	tile1.AddComponent<TileComponent>(250, 250, 64, 64, 1);
-	tile1.AddComponent<ColliderComponent>("grass");
-	tile2.AddComponent<TileComponent>(150, 150, 64, 64, 2);
-	tile2.AddComponent<ColliderComponent>("dirt");
-
-	player.AddComponent<TransformComponent>(0.0f, 0.0f, Vector2(1.0f, 1.0f));
-	const std::string stickman_texture_path = "assets/stickman.png";
-	player.AddComponent<SpriteComponent>(stickman_texture_path.c_str());
-	player.AddComponent<ControllerComponent>();
-	player.AddComponent<ColliderComponent>("player");
-
-	wall.AddComponent<TransformComponent>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
-	const std::string wall_texture_path = "assets/dirt.png";
-	wall.AddComponent<SpriteComponent>(wall_texture_path.c_str());
-	wall.AddComponent<ColliderComponent>("wall");
+	wall.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
+	const std::string wall_texture_path = "assets/asteroid.png";
+	wall.AddComponent<SpriteRenderer>(wall_texture_path.c_str());
+	wall.AddComponent<Collider2D>("wall");
 }
 
 void Game::HandleEvents()
@@ -99,15 +87,9 @@ void Game::Update()
 	manager.Refresh();
 	manager.Update();
 
-	//if (Collision::AABB(player.GetComponent<ColliderComponent>().colliderRect, wall.GetComponent<ColliderComponent>().colliderRect))
-	//{
-	//	player.GetComponent<TransformComponent>().velocity *= -1;
-	//	std::cout << "Wall Hit!" << std::endl;
-	//}
+	Collider2D& playerCollider = player.GetComponent<Collider2D>();
 
-	ColliderComponent& playerCollider = player.GetComponent<ColliderComponent>();
-
-	for (ColliderComponent* cc : colliders)
+	for (Collider2D* cc : colliders)
 	{
 		if (cc == &playerCollider)
 		{
@@ -116,7 +98,7 @@ void Game::Update()
 
 		if (Collision::AABB(playerCollider, *cc))
 		{
-			player.GetComponent<TransformComponent>().velocity *= -1;
+			player.GetComponent<Transform>().velocity *= -1;
 		}
 	}
 }
@@ -125,7 +107,6 @@ void Game::Render()
 {
 	SDL_RenderClear(renderer);
 
-	//map->DrawMap();
 	manager.Draw();
 
 	SDL_RenderPresent(renderer);

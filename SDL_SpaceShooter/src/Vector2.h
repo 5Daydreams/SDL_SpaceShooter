@@ -33,6 +33,8 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& stream, const Vector2& vec);
 
+	Vector2& Rotate(const float scalar);
+
 	static const Vector2 Zero;
 	static const Vector2 One;
 };

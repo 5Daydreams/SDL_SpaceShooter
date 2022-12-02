@@ -2,8 +2,7 @@
 
 #include "../Game.h"
 #include "ECS.h"
-#include "TransformComponent.h"
-#include "SpriteComponent.h"
-#include "ControllerComponent.h"
-#include "ColliderComponent.h"
-#include "TileComponent.h"
+#include "Transform.h"
+#include "SpriteRenderer.h"
+#include "Input.h"
+#include "Collider.h"
