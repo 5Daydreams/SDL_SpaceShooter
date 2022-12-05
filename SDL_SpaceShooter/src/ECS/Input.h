@@ -1,119 +1,166 @@
 #pragma once
 
-#include "ECS.h"
 #include "Components.h"
+#include <functional>
+#include <map>
 
-class KeyCallbacks
+
+class KeyCallback
 {
 private:
-	SDL_KeyCode key;
-	bool currentlyHeld = false;
+	const SDL_KeyCode key;
 
 public:
+	std::vector<std::function<void()>> onKeyDown = std::vector<std::function<void()>>{};
+	std::vector<std::function<void()>> onKeyHeld = std::vector<std::function<void()>>{};
+	std::vector<std::function<void()>> onKeyUp = std::vector<std::function<void()>>{};
+	bool currentlyHeld = false;
 
-	void UpdateKeyState()
+	KeyCallback()
+		:key(SDL_KeyCode::SDLK_SPACE)
 	{
-		bool keyMatches = Game::event.key.keysym.sym == key;
-
-		if (!keyMatches)
-		{
-			return;
-		}
-
-		bool oldState = currentlyHeld;
-
-		switch (Game::event.type)
-		{
-		case SDL_KEYDOWN:
-			currentlyHeld = true;
-			break;
-		case SDL_KEYUP:
-			currentlyHeld = false;
-			break;
-		default:
-			// KeyState doesn't change if it isn't up or down
-			break;
-		}
-
-		if (oldState != currentlyHeld)
-		{
-			if (currentlyHeld)
-			{
-				// OnKeyPressed();
-			}
-			else
-			{
-				// OnKeyReleased();
-			}
-		}
-		else // oldState == currentHeldState
-		{
-			if (currentlyHeld)
-			{
-				// OnKeyHeld();
-			}
-		}
-
 	}
 
+	KeyCallback(const SDL_KeyCode key) : key(key)
+	{
+	}
+
+	~KeyCallback() {}
+
+	SDL_KeyCode GetKeyCode() const
+	{
+		return key;
+	}
+
+	void SubscribeToKeyDown(std::function<void()> callback)
+	{
+		onKeyDown.push_back(callback);
+	}
+
+	void SubscribeToKeyHeld(std::function<void()> callback)
+	{
+		onKeyHeld.push_back(callback);
+	}
+
+	void SubscribeToKeyUp(std::function<void()> callback)
+	{
+		onKeyUp.push_back(callback);
+	}
+
+	void TriggerOnKeyDown() const
+	{
+		for (auto callback : onKeyDown)
+		{
+			callback();
+		}
+	}
+
+	void TriggerOnKeyHeld() const
+	{
+		for (auto callback : onKeyHeld)
+		{
+			callback();
+		}
+	}
+
+	void TriggerOnKeyUp() const
+	{
+		for (auto callback : onKeyUp)
+		{
+			callback();
+		}
+	}
 };
 
 class Input : public Component
 {
-public:
+private:
 	Transform* transform;
+	PhysicsMotion* phys;
+
+public:
+	Vector2 axisInput = Vector2::Zero;
+	std::map<char, KeyCallback> inputResponses;
 
 	void Init() override
 	{
 		transform = &entity->GetComponent<Transform>();
+		phys = &entity->GetComponent<PhysicsMotion>();
+
+		inputResponses.insert(std::pair<char, KeyCallback>('w', KeyCallback(SDLK_w)));
+		inputResponses.insert(std::pair<char, KeyCallback>('s', KeyCallback(SDLK_s)));
+		inputResponses.insert(std::pair<char, KeyCallback>('a', KeyCallback(SDLK_a)));
+		inputResponses.insert(std::pair<char, KeyCallback>('d', KeyCallback(SDLK_d)));
+		inputResponses.insert(std::pair<char, KeyCallback>(' ', KeyCallback(SDLK_SPACE)));
+
+		// Add the callbacks
+
+		// void SubscribeToKeyHeld(std::function<void()> callback);
+
+		auto w = [this]() {this->axisInput.y = -1.0f; };
+		auto s = [this]() {this->axisInput.y = 1.0f; };
+		auto verticalZero = [this]() {this->axisInput.y = 0.0f; };
+		auto space = [this]() {std::cout << "Pressed space" << std::endl; };
+
+		auto a = [this]() {this->axisInput.x = -1.0f; };
+		auto d = [this]() {this->axisInput.x = 1.0f; };
+		auto horizontalZero = [this]() {this->axisInput.x = 0.0f; };
+
+		inputResponses['w'].SubscribeToKeyHeld(w);
+		inputResponses['s'].SubscribeToKeyHeld(s);
+		inputResponses['w'].SubscribeToKeyUp(verticalZero);
+		inputResponses['s'].SubscribeToKeyUp(verticalZero);
+		inputResponses[' '].SubscribeToKeyHeld(space);
+
+		inputResponses['a'].SubscribeToKeyHeld(a);
+		inputResponses['d'].SubscribeToKeyHeld(d);
+		inputResponses['a'].SubscribeToKeyUp(horizontalZero);
+		inputResponses['d'].SubscribeToKeyUp(horizontalZero);
 	}
 
 	void Update() override
 	{
+		const SDL_Keycode keyCode = Game::event.key.keysym.sym;
 
-		// Refactor: try to setup a key DOWN,HELD,RELEASED system
-		if (Game::event.type == SDL_KEYUP)
+		if (keyCode == 0)
 		{
-			switch (Game::event.key.keysym.sym)
+			return;
+		}
+
+		for (auto& [_, inputEvent] : inputResponses)
+		{
+			// KeyState doesn't change if it isn't up or down
+			if (inputEvent.currentlyHeld)
 			{
-			case SDLK_w:
-				transform->velocity.y = 0.0f;
+				inputEvent.TriggerOnKeyHeld();
+			}
+
+			bool keyMatches = keyCode == inputEvent.GetKeyCode();
+
+			if (!keyMatches)
+			{
+				inputEvent.TriggerOnKeyDown();
+				continue;
+			}
+
+			switch (Game::event.type)
+			{
+			case SDL_KEYUP:
+				inputEvent.currentlyHeld = false;
+				inputEvent.TriggerOnKeyUp();
 				break;
-			case SDLK_s:
-				transform->velocity.y = 0.0f;
-				break;
-			case SDLK_a:
-				transform->velocity.x = 0.0f;
-				break;
-			case SDLK_d:
-				transform->velocity.x = 0.0f;
+			case SDL_KEYDOWN:
+				inputEvent.currentlyHeld = true;
+				inputEvent.TriggerOnKeyDown();
 				break;
 			default:
 				break;
 			}
 		}
 
-		if (Game::event.type == SDL_KEYDOWN)
-		{
-			switch (Game::event.key.keysym.sym)
-			{
-			case SDLK_w:
-				transform->velocity.y = -1.0f;
-				break;
-			case SDLK_s:
-				transform->velocity.y = 1.0f;
-				break;
-			case SDLK_a:
-				transform->velocity.x = -1.0f;
-				break;
-			case SDLK_d:
-				transform->velocity.x = 1.0f;
-				break;
-			default:
-				break;
-			}
-		}
+		axisInput.Normalize();
+		phys->AddForce(axisInput.y * Vector2::Forward);
+		phys->AddTorque(-axisInput.x);
+		axisInput = Vector2::Zero;
 	}
-
-
 };

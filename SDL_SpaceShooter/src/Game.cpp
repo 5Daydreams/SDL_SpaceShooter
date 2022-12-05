@@ -6,6 +6,10 @@
 std::vector<Collider2D*> Game::colliders;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
+float Game::deltaTime;
+float currTime = 0.0f;
+float lastTime = 0.0f;
+
 
 ECSManager manager;
 
@@ -60,8 +64,9 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	player.AddComponent<Transform>(50.0f, 50.0f, Vector2(1.0f, 1.0f));
 	const std::string stickman_texture_path = "assets/spaceship.png";
 	player.AddComponent<SpriteRenderer>(stickman_texture_path.c_str());
-	player.AddComponent<Input>();
+	player.AddComponent<PhysicsMotion>();
 	player.AddComponent<Collider2D>("player");
+	player.AddComponent<Input>();
 
 	wall.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
 	const std::string wall_texture_path = "assets/asteroid.png";
@@ -84,6 +89,9 @@ void Game::HandleEvents()
 
 void Game::Update()
 {
+	currTime = SDL_GetTicks() / 1000.0f;
+	Game::deltaTime = (currTime - lastTime);
+
 	manager.Refresh();
 	manager.Update();
 
@@ -98,9 +106,12 @@ void Game::Update()
 
 		if (Collision::AABB(playerCollider, *cc))
 		{
-			player.GetComponent<Transform>().velocity *= -1;
+			auto& phys = player.GetComponent<PhysicsMotion>();
+			phys.SetVelocity(phys.GetVelocity() * -1);
 		}
 	}
+
+	lastTime = currTime;
 }
 
 void Game::Render()

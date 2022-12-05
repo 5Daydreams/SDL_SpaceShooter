@@ -31,6 +31,7 @@
     <ClInclude Include="src\ECS\Components.h" />
     <ClInclude Include="src\ECS\Input.h" />
     <ClInclude Include="src\ECS\ECS.h" />
+    <ClInclude Include="src\ECS\PhysicsMotion.h" />
     <ClInclude Include="src\ECS\SpriteRenderer.h" />
     <ClInclude Include="src\ECS\Transform.h" />
     <ClInclude Include="src\Game.h" />

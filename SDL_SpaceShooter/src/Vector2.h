@@ -11,6 +11,8 @@ public:
 	Vector2();
 	Vector2(float x, float y);
 
+	Vector2& Normalize();
+
 	Vector2& Add(const Vector2& vec);
 	friend Vector2 operator+(const Vector2& v1, const Vector2& v2);
 	Vector2& operator+=(const Vector2& vec);
@@ -38,4 +40,6 @@ public:
 
 	static const Vector2 Zero;
 	static const Vector2 One;
+	static const Vector2 Forward;
+	static const Vector2 Right;
 };

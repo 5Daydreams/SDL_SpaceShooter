@@ -25,6 +25,7 @@ public:
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 	static std::vector<Collider2D*> colliders;
+	static float deltaTime;
 	static void PrintSDLErrorLine();
 
 private:

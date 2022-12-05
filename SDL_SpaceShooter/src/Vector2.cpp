@@ -1,7 +1,9 @@
 #include "Vector2.h"
 
-static const Vector2 Zero = Vector2(0.0f, 0.0f);
-static const Vector2 One = Vector2(1.0f, 1.0f);
+const Vector2 Vector2::Zero = Vector2(0.0f, 0.0f);
+const Vector2 Vector2::One = Vector2(1.0f, 1.0f);
+const Vector2 Vector2::Forward = Vector2(0.0f, 1.0f);
+const Vector2 Vector2::Right = Vector2(1.0f, 0.0f);
 
 Vector2::Vector2()
 {
@@ -13,6 +15,22 @@ Vector2::Vector2(float x, float y)
 {
 	this->x = x;
 	this->y = y;
+}
+
+Vector2& Vector2::Normalize()
+{
+	float magSquared = (this->x) * (this->x) + (this->y) * (this->y);
+	float vecSize = sqrt(magSquared);
+
+	if (vecSize < 0.00001f)
+	{
+		vecSize = 1.0f;
+	}
+
+	this->x /= vecSize;
+	this->y /= vecSize;
+
+	return *this;
 }
 
 Vector2& Vector2::Add(const Vector2& vec)

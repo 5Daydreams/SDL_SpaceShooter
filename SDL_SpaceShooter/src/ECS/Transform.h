@@ -9,11 +9,8 @@ public:
 	float rotation = 0.0f;
 	Vector2 scale;
 
-	Vector2 velocity;
-	float speed = 3.0f;
-
-	Vector2 forward = Vector2(cos(rotation), sin(rotation));
 	Vector2 right = Vector2(cos(rotation), sin(rotation));
+	Vector2 forward = Vector2(-sin(rotation), cos(rotation));
 
 	Transform()
 	{
@@ -57,21 +54,16 @@ public:
 
 	void Init() override
 	{
-		velocity = Vector2(0.0f, 0.0f);
 	}
 
-	void Rotate(const float angle)
+	void SetRotation(const float angle)
 	{
 		rotation = angle;
 	}
 
 	void Update() override
 	{
-		forward = Vector2(cos(rotation), sin(rotation));
 		right = Vector2(cos(rotation), sin(rotation));
-
-		Vector2 rotatedVelocity = velocity.x * right + velocity.y * forward;
-
-		position += velocity * speed;
+		forward = Vector2(-sin(rotation), cos(rotation));
 	}
 };
