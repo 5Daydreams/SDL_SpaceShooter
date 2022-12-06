@@ -9,8 +9,8 @@ public:
 	float rotation = 0.0f;
 	Vector2 scale;
 
-	Vector2 right = Vector2(cos(rotation), sin(rotation));
-	Vector2 forward = Vector2(-sin(rotation), cos(rotation));
+	Vector2 right = Vector2(cos(rotation), -sin(rotation));
+	Vector2 forward = Vector2(sin(rotation), cos(rotation));
 
 	Transform()
 	{
@@ -63,7 +63,7 @@ public:
 
 	void Update() override
 	{
-		right = Vector2(cos(rotation), sin(rotation));
-		forward = Vector2(-sin(rotation), cos(rotation));
+		right = Vector2(cos(rotation ), sin(rotation ));
+		forward = Vector2(-sin(rotation ), cos(rotation ));
 	}
 };

@@ -5,5 +5,5 @@
 #include "Transform.h"
 #include "SpriteRenderer.h"
 #include "Collider.h"
-#include "PhysicsMotion.h"
+#include "SpaceshipMotion.h"
 #include "Input.h"

@@ -76,7 +76,7 @@ class Input : public Component
 {
 private:
 	Transform* transform;
-	PhysicsMotion* phys;
+	SpaceshipMotion* phys;
 
 public:
 	Vector2 axisInput = Vector2::Zero;
@@ -85,7 +85,7 @@ public:
 	void Init() override
 	{
 		transform = &entity->GetComponent<Transform>();
-		phys = &entity->GetComponent<PhysicsMotion>();
+		phys = &entity->GetComponent<SpaceshipMotion>();
 
 		inputResponses.insert(std::pair<char, KeyCallback>('w', KeyCallback(SDLK_w)));
 		inputResponses.insert(std::pair<char, KeyCallback>('s', KeyCallback(SDLK_s)));
@@ -108,12 +108,17 @@ public:
 
 		inputResponses['w'].SubscribeToKeyHeld(w);
 		inputResponses['s'].SubscribeToKeyHeld(s);
+		//inputResponses['w'].SubscribeToKeyDown(w);
+		//inputResponses['s'].SubscribeToKeyDown(s);
 		inputResponses['w'].SubscribeToKeyUp(verticalZero);
 		inputResponses['s'].SubscribeToKeyUp(verticalZero);
+		inputResponses[' '].SubscribeToKeyHeld(space);
 		inputResponses[' '].SubscribeToKeyHeld(space);
 
 		inputResponses['a'].SubscribeToKeyHeld(a);
 		inputResponses['d'].SubscribeToKeyHeld(d);
+		inputResponses['a'].SubscribeToKeyDown(a);
+		inputResponses['d'].SubscribeToKeyDown(d);
 		inputResponses['a'].SubscribeToKeyUp(horizontalZero);
 		inputResponses['d'].SubscribeToKeyUp(horizontalZero);
 	}
@@ -139,7 +144,6 @@ public:
 
 			if (!keyMatches)
 			{
-				inputEvent.TriggerOnKeyDown();
 				continue;
 			}
 
@@ -159,8 +163,8 @@ public:
 		}
 
 		axisInput.Normalize();
-		phys->AddForce(axisInput.y * Vector2::Forward);
-		phys->AddTorque(-axisInput.x);
+		phys->AddThrust(axisInput.y);
+		phys->AddTorque(axisInput.x);
 		axisInput = Vector2::Zero;
 	}
 };

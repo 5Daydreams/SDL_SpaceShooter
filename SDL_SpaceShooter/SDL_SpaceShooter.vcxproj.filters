@@ -62,7 +62,7 @@
     <ClInclude Include="src\ECS\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\PhysicsMotion.h">
+    <ClInclude Include="src\ECS\SpaceshipMotion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

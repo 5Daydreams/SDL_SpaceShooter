@@ -10,15 +10,10 @@ float Game::deltaTime;
 float currTime = 0.0f;
 float lastTime = 0.0f;
 
-
 ECSManager manager;
 
 auto& player(manager.AddEntity());
 auto& wall(manager.AddEntity());
-
-auto& tile0(manager.AddEntity());
-auto& tile1(manager.AddEntity());
-auto& tile2(manager.AddEntity());
 
 void Game::PrintSDLErrorLine()
 {
@@ -64,7 +59,7 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	player.AddComponent<Transform>(50.0f, 50.0f, Vector2(1.0f, 1.0f));
 	const std::string stickman_texture_path = "assets/spaceship.png";
 	player.AddComponent<SpriteRenderer>(stickman_texture_path.c_str());
-	player.AddComponent<PhysicsMotion>();
+	player.AddComponent<SpaceshipMotion>();
 	player.AddComponent<Collider2D>("player");
 	player.AddComponent<Input>();
 
@@ -106,7 +101,7 @@ void Game::Update()
 
 		if (Collision::AABB(playerCollider, *cc))
 		{
-			auto& phys = player.GetComponent<PhysicsMotion>();
+			auto& phys = player.GetComponent<SpaceshipMotion>();
 			phys.SetVelocity(phys.GetVelocity() * -1);
 		}
 	}

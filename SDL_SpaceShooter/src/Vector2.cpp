@@ -17,12 +17,18 @@ Vector2::Vector2(float x, float y)
 	this->y = y;
 }
 
-Vector2& Vector2::Normalize()
+float Vector2::Magnitude() const
 {
 	float magSquared = (this->x) * (this->x) + (this->y) * (this->y);
 	float vecSize = sqrt(magSquared);
+	return vecSize;
+}
 
-	if (vecSize < 0.00001f)
+Vector2& Vector2::Normalize()
+{
+	float vecSize = this->Magnitude();
+
+	if (this->Magnitude() < 0.00001f)
 	{
 		vecSize = 1.0f;
 	}
@@ -141,6 +147,26 @@ Vector2& Vector2::Rotate(const float radians)
 		cos(radians) * this->x - sin(radians) * this->y,
 		sin(radians) * this->x + cos(radians) * this->y
 	);
+
+	return *this;
+}
+
+Vector2& Vector2::ClampMagnitude(const float scalar)
+{
+	if(scalar < 0.f)
+	{
+		return *this;
+	}
+
+	const float vecSize = this->Magnitude();
+
+	if(vecSize > scalar)
+	{
+		this->Normalize();
+
+		this->x *= scalar;
+		this->y *= scalar;
+	}
 
 	return *this;
 }

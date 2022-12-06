@@ -53,7 +53,7 @@ public:
 
 	void Draw()	override
 	{
-		double finalRotation = transform->rotation + rotation;
-		SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, -finalRotation, NULL, SDL_FLIP_NONE);
+		double finalRotation = (transform->rotation + rotation) * 180.f / 3.14f;
+		SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, finalRotation, NULL, SDL_FLIP_NONE);
 	}
 };
