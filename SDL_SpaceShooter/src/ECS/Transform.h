@@ -1,6 +1,6 @@
 #pragma once
-#include "Components.h"
-#include "Vector2.h"
+#include "ECS.h"
+#include "../Vector2.h"
 
 class Transform : public Component
 {

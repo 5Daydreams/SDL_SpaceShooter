@@ -1,5 +1,13 @@
 #include "Game.h"
-#include "ECS/Components.h"
+#include "ECS/ECS.h"
+#include "ECS/Transform.h"
+#include "ECS/SpriteRenderer.h"
+#include "ECS/Collider.h"
+#include "ECS/Input.h"
+#include "ECS/SpaceshipMotion.h"
+#include "ECS/ProjectileInstance.h"
+#include "ECS/ProjectileManager.h"
+
 #include "Vector2.h"
 #include "Collision.h"
 

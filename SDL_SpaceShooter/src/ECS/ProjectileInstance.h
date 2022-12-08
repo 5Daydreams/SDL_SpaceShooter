@@ -1,5 +1,9 @@
 #pragma once
-#include "Components.h"
+#include "Collider.h"
+#include "Transform.h"
+#include "SpriteRenderer.h"
+#include "../Vector2.h"
+
 
 class ProjectileInstance
 {
@@ -12,8 +16,13 @@ private:
 
 public:
 
-	ProjectileInstance()
+	ProjectileInstance(Collider2D* col, SpriteRenderer* rend, Transform* tran)
 	{
+		velocity = Vector2::Zero;
+		collider = col;
+		renderer = rend;
+		transform = tran;
+		isActive = false;
 	}
 
 	~ProjectileInstance()

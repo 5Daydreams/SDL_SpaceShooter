@@ -1,20 +1,35 @@
 #pragma once
 #include <vector>
-#include "SDL.h"
-#include "Components.h"
+#include "../Vector2.h"
+#include "ECS.h"
+#include "ProjectileInstance.h"
 
 
-const int PROJECTILE_POOL_COUNT = 1000;
+const int PROJECTILE_POOL_COUNT = 100;
 
 class ProjectileManager : public Component
 {
-
 	std::vector<ProjectileInstance> projectiles;
 
 public:
 
-	ProjectileManager() : projectiles(PROJECTILE_POOL_COUNT)
+	ProjectileManager()
 	{
+		projectiles = std::vector<ProjectileInstance>{};
+		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++) {
+
+			ProjectileInstance temp = ProjectileInstance();
+			(
+				velocity = ;
+			collider = ;
+			renderer = ;
+			transform = ;
+			isActive = ;
+			);
+
+			projectiles.push_back();
+		}
+
 	}
 
 	~ProjectileManager()
@@ -32,6 +47,7 @@ public:
 			}
 		}
 
+		// Failed to find inactive pool element - do not spawn a new projectile
 		if (index == -1) {
 			return;
 		}
@@ -39,67 +55,53 @@ public:
 		projectiles[index].FireProjectile(spawnPos, spawnVel);
 	}
 
-	void Init()
+	void DisableProjectile(int index)
 	{
-
+		projectiles[index].DisableProjectile();
 	}
 
-	void Update()
+	//void ForAllProjectiles(std::function<void(ProjectileInstance&)> f)
+	//{
+	//	for (int i = 0; i < projectiles.size(); i++)
+	//	{
+	//		if (projectiles[i].IsActive())
+	//		{
+	//			f(projectiles[i]);
+	//		}
+	//	}
+	//}
+
+
+	void Init() override
 	{
-
-	}
-};
-
-// Define the ProjectileComponent class
-class ProjectileComponent {
-public:
-	// Constructor to initialize the array of projectiles and flags
-	ProjectileComponent() : projectiles(PROJECTILE_POOL_COUNT), flags(PROJECTILE_POOL_COUNT) {}
-
-	// Function to add a new projectile to the game
-	void addProjectile(int x, int y, int dx, int dy, int width, int height, SDL_Color color) {
-		// Find the first inactive projectile in the array
-		int index = -1;
-		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++) {
-			if (!flags[i]) {
-				index = i;
-				break;
-			}
-		}
-
-		// If there are no inactive projectiles, return
-		if (index == -1) {
-			return;
-		}
-
-		// Create a new projectile with the specified attributes and add it to the array
-		projectiles[index] = Projectile(x, y, dx, dy, width, height, color);
-
-		// Set the flag for the projectile to indicate that it is active
-		flags[index] = true;
-	}
-
-	// Function to remove a projectile from the game
-	void removeProjectile(int index) {
-		// Set the flag for the projectile to indicate that it is inactive
-		flags[index] = false;
-	}
-
-	// Function to iterate over the active projectiles in the array
-	void forEachActive(std::function<void(Projectile&)> f) {
-		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++) {
-			if (flags[i]) {
-				f(projectiles[i]);
+		for (int i = 0; i < projectiles.size(); i++) {
+			if (projectiles[i].IsActive())
+			{
+				projectiles[i].DisableProjectile();
 			}
 		}
 	}
 
-private:
-	// Array of projectiles
-	std::vector<Projectile> projectiles;
+	void Update() override
+	{
+		for (int i = 0; i < projectiles.size(); i++) {
+			if (projectiles[i].IsActive())
+			{
+				projectiles[i].Update();
+			}
+		}
+	}
 
-	// Array of flags to indicate which projectiles are active
-	std::vector<bool> flags;
+	void Draw() override
+	{
+		for (int i = 0; i < projectiles.size(); i++)
+		{
+			if (projectiles[i].IsActive())
+			{
+				projectiles[i].Draw();
+			}
+		}
+	}
 };
 
 /*

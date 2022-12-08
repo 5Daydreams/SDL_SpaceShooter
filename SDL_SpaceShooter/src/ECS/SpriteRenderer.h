@@ -1,6 +1,8 @@
 #pragma once
-#include "Components.h"
+#include "../Game.h"
 #include "SDL.h"
+#include "ECS.h"
+#include "Transform.h"
 
 class SpriteRenderer : public Component
 {

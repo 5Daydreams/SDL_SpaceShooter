@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
 #include "SDL.h"
-#include "Components.h"
+#include "../Game.h"
+#include "../Vector2.h"
+#include "ECS.h"
+#include "Transform.h"
 
 class Collider2D : public Component
 {

@@ -1,8 +1,12 @@
 #pragma once
 
-#include "Components.h"
 #include <functional>
 #include <map>
+
+#include "ProjectileManager.h"
+#include "../Game.h"
+#include "SpaceshipMotion.h"
+#include "Transform.h"
 
 
 class KeyCallback
@@ -77,6 +81,7 @@ class Input : public Component
 private:
 	Transform* transform;
 	SpaceshipMotion* phys;
+	ProjectileManager* proj;
 
 public:
 	Vector2 axisInput = Vector2::Zero;
@@ -86,6 +91,7 @@ public:
 	{
 		transform = &entity->GetComponent<Transform>();
 		phys = &entity->GetComponent<SpaceshipMotion>();
+		proj = &entity->GetComponent<ProjectileManager>();
 
 		inputResponses.insert(std::pair<char, KeyCallback>('w', KeyCallback(SDLK_w)));
 		inputResponses.insert(std::pair<char, KeyCallback>('s', KeyCallback(SDLK_s)));
@@ -100,11 +106,15 @@ public:
 		auto w = [this]() {this->axisInput.y = -1.0f; };
 		auto s = [this]() {this->axisInput.y = 1.0f; };
 		auto verticalZero = [this]() {this->axisInput.y = 0.0f; };
-		auto space = [this]() {std::cout << "Pressed space" << std::endl; };
 
 		auto a = [this]() {this->axisInput.x = -1.0f; };
 		auto d = [this]() {this->axisInput.x = 1.0f; };
 		auto horizontalZero = [this]() {this->axisInput.x = 0.0f; };
+
+		auto space = [this]()
+		{
+			proj->SpawnProjectile(this->transform->position, this->transform->forward);
+		};
 
 		inputResponses['w'].SubscribeToKeyDown(w);
 		inputResponses['s'].SubscribeToKeyDown(s);

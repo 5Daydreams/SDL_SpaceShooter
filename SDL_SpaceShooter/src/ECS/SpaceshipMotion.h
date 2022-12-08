@@ -1,6 +1,7 @@
 #pragma once
-#include "Components.h"
 #include "../Vector2.h"
+#include "ECS.h"
+#include "Transform.h"
 
 class SpaceshipMotion : public Component
 {
@@ -12,9 +13,9 @@ private:
 	Vector2 velocity = Vector2::Zero;
 
 public:
-	float thrustSpeed = 0.3f;
+	float thrustSpeed = 0.05f;
 	float rotationSpeed = 0.1f;
-	float drag = 0.001f;
+	float drag = 0.01f;
 
 	void Init() override
 	{
@@ -31,11 +32,11 @@ public:
 		velocity = newVel;
 	}
 
-	void AddTorque(const float torque)
+	void AddTorque(const float inputTorque)
 	{
-		this->torque = torque;
+		this->torque = inputTorque;
 
-		transform->rotation += torque * rotationSpeed;
+		transform->rotation += inputTorque * rotationSpeed;
 	}
 
 	void AddThrust(const float inputThrust)
