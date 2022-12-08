@@ -106,19 +106,20 @@ public:
 		auto d = [this]() {this->axisInput.x = 1.0f; };
 		auto horizontalZero = [this]() {this->axisInput.x = 0.0f; };
 
+		inputResponses['w'].SubscribeToKeyDown(w);
+		inputResponses['s'].SubscribeToKeyDown(s);
 		inputResponses['w'].SubscribeToKeyHeld(w);
 		inputResponses['s'].SubscribeToKeyHeld(s);
-		//inputResponses['w'].SubscribeToKeyDown(w);
-		//inputResponses['s'].SubscribeToKeyDown(s);
 		inputResponses['w'].SubscribeToKeyUp(verticalZero);
 		inputResponses['s'].SubscribeToKeyUp(verticalZero);
-		inputResponses[' '].SubscribeToKeyHeld(space);
+
+		inputResponses[' '].SubscribeToKeyDown(space);
 		inputResponses[' '].SubscribeToKeyHeld(space);
 
-		inputResponses['a'].SubscribeToKeyHeld(a);
-		inputResponses['d'].SubscribeToKeyHeld(d);
 		inputResponses['a'].SubscribeToKeyDown(a);
 		inputResponses['d'].SubscribeToKeyDown(d);
+		inputResponses['a'].SubscribeToKeyHeld(a);
+		inputResponses['d'].SubscribeToKeyHeld(d);
 		inputResponses['a'].SubscribeToKeyUp(horizontalZero);
 		inputResponses['d'].SubscribeToKeyUp(horizontalZero);
 	}

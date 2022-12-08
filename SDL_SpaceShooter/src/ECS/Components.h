@@ -7,3 +7,5 @@
 #include "Collider.h"
 #include "SpaceshipMotion.h"
 #include "Input.h"
+#include "ProjectileInstance.h"
+#include "ProjectileManager.h"
