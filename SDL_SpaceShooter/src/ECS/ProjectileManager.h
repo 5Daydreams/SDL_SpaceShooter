@@ -15,21 +15,17 @@ public:
 
 	ProjectileManager()
 	{
-		projectiles = std::vector<ProjectileInstance>{};
+		projectiles = std::vector<ProjectileInstance>();
 		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++) {
 
-			ProjectileInstance temp = ProjectileInstance();
-			(
-				velocity = ;
-			collider = ;
-			renderer = ;
-			transform = ;
-			isActive = ;
-			);
+			Transform* transform = new Transform();
+			Collider2D* collider = new Collider2D("projectile");
+			ProjectileRenderer* renderer = new ProjectileRenderer(transform, "assets/projectile.png");
 
-			projectiles.push_back();
+			ProjectileInstance temp = ProjectileInstance(collider, renderer, transform);
+
+			projectiles.push_back(temp);
 		}
-
 	}
 
 	~ProjectileManager()
@@ -79,6 +75,7 @@ public:
 			{
 				projectiles[i].DisableProjectile();
 			}
+			projectiles[i].Init();
 		}
 	}
 

@@ -113,6 +113,7 @@ public:
 
 		auto space = [this]()
 		{
+			std::cout << "Fired a thing";
 			proj->SpawnProjectile(this->transform->position, this->transform->forward);
 		};
 

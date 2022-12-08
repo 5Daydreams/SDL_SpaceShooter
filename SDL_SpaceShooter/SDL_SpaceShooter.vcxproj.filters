@@ -71,5 +71,8 @@
     <ClInclude Include="src\ECS\ProjectileInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ECS\ProjectileRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

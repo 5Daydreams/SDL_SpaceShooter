@@ -69,6 +69,7 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	player.AddComponent<SpriteRenderer>(stickman_texture_path.c_str());
 	player.AddComponent<SpaceshipMotion>();
 	player.AddComponent<Collider2D>("player");
+	player.AddComponent<ProjectileManager>();
 	player.AddComponent<Input>();
 
 	wall.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
