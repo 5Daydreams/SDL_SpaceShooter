@@ -18,16 +18,16 @@ float Game::deltaTime;
 float currTime = 0.0f;
 float lastTime = 0.0f;
 
-ECSManager manager;
+ECSManager Game::ComponentManager;
 
-auto& player(manager.AddEntity());
-auto& asteroid(manager.AddEntity());
+Entity& player(Game::ComponentManager.AddEntity());
+Entity& asteroid(Game::ComponentManager.AddEntity());
+
 
 void Game::PrintSDLErrorLine()
 {
 	std::cout << SDL_GetError() << std::endl;
 }
-
 
 void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, bool fullscreen)
 {
@@ -68,14 +68,14 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	const std::string stickman_texture_path = "assets/spaceship.png";
 	player.AddComponent<SpriteRenderer>(stickman_texture_path.c_str());
 	player.AddComponent<SpaceshipMotion>();
-	player.AddComponent<Collider2D>("player");
-	player.AddComponent<ProjectileManager>(&player.GetComponent<Transform>());
+	player.AddComponent<Collider2D>("player").isActive = true;
+	player.AddComponent<ProjectileManager>();
 	player.AddComponent<Input>();
 
 	asteroid.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
 	const std::string wall_texture_path = "assets/asteroid.png";
 	asteroid.AddComponent<SpriteRenderer>(wall_texture_path.c_str());
-	asteroid.AddComponent<Collider2D>("asteroid");
+	asteroid.AddComponent<Collider2D>("asteroid").isActive = true;
 }
 
 void Game::HandleEvents()
@@ -96,8 +96,8 @@ void Game::Update()
 	currTime = SDL_GetTicks() / 1000.0f;
 	Game::deltaTime = (currTime - lastTime);
 
-	manager.Refresh();
-	manager.Update();
+	ComponentManager.Refresh();
+	ComponentManager.Update();
 
 	ICollider& playerCollider = player.GetComponent<Collider2D>();
 
@@ -124,8 +124,8 @@ void Game::Update()
 			}
 
 			const bool playerHitAsteroid =
-				(cc1 == &playerCollider && cc2->tag == "asteroid")
-				|| (cc1->tag == "asteroid" && cc2 == &playerCollider);
+				(cc1->tag == "player" && cc2->tag == "asteroid")
+				|| (cc1->tag == "asteroid" && cc2->tag == "player");
 
 			if (playerHitAsteroid)
 			{
@@ -145,7 +145,7 @@ void Game::Render()
 {
 	SDL_RenderClear(renderer);
 
-	manager.Draw();
+	ComponentManager.Draw();
 
 	SDL_RenderPresent(renderer);
 }

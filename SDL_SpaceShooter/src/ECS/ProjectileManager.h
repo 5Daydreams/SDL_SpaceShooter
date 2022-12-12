@@ -2,8 +2,8 @@
 #include <vector>
 #include "../Vector2.h"
 #include "ECS.h"
+#include "../Game.h"
 #include "Projectiles/ProjectileInstance.h"
-#include "Projectiles/ProjCollider.h"
 
 
 const int PROJECTILE_POOL_COUNT = 100;
@@ -11,25 +11,28 @@ const int PROJECTILE_POOL_COUNT = 100;
 class ProjectileManager : public Component
 {
 private:
-	std::vector<ProjectileInstance> projectiles;
-	const Vector2 offset = Vector2(0,-16);
-	const Vector2 baseOffset = Vector2(16,16);
+	std::vector<ProjectileInstance*> projectiles;
+	const Vector2 offset = Vector2(0, -16);
+	const Vector2 baseOffset = Vector2(16, 16);
 	const Transform* transform;
 
 public:
 
-	ProjectileManager(Transform* transform) : transform(transform)
+	ProjectileManager()
 	{
-		projectiles = std::vector<ProjectileInstance>();
-		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++) {
+		projectiles = std::vector<ProjectileInstance*>();
 
-			ProjTransform* proj_transform = new ProjTransform(Vector2::Zero, Vector2::One);
-			ProjCollider2D* collider = new ProjCollider2D(proj_transform, "projectile");
-			ProjectileRenderer* renderer = new ProjectileRenderer(proj_transform, "assets/projectile.png");
+		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++)
+		{
+			Entity& temp(Game::ComponentManager.AddEntity());
 
-			ProjectileInstance temp = ProjectileInstance(collider, renderer, proj_transform);
+			temp.AddComponent<Transform>();
+			temp.AddComponent<SpriteRenderer>("assets/projectile.png");
+			temp.AddComponent<Collider2D>("projectile");
+			ProjectileInstance& proj = temp.AddComponent<ProjectileInstance>();
 
-			projectiles.push_back(temp);
+			projectiles.push_back(&proj);
+			proj.DisableProjectile();
 		}
 	}
 
@@ -42,7 +45,7 @@ public:
 		// Search for inactive references within the pool
 		int index = -1;
 		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++) {
-			if (!projectiles[i].IsActive()) 
+			if (!projectiles[i]->IsActive())
 			{
 				index = i;
 				break;
@@ -50,7 +53,7 @@ public:
 		}
 
 		// Failed to find inactive pool element - do not spawn a new projectile
-		if (index == -1) 
+		if (index == -1)
 		{
 			return;
 		}
@@ -64,43 +67,27 @@ public:
 		const Vector2 offsetRotated = offsetScaled.Rotate(transform->rotation);
 
 		// Note.: I can't find where the error is, but the *(-1) is required to align the projectile velocity to the actual firing direction
-		projectiles[index].FireProjectile(spawnPos + baseOffset + offsetRotated, spawnVel * -1);
+		projectiles[index]->FireProjectile(spawnPos + baseOffset + offsetRotated, spawnVel * -1.0f);
 	}
 
 	void DisableProjectile(int index)
 	{
-		projectiles[index].DisableProjectile();
+		projectiles[index]->DisableProjectile();
 	}
 
 
 	void Init() override
 	{
-		for (int i = 0; i < projectiles.size(); i++) {
-			if (projectiles[i].IsActive())
-			{
-				projectiles[i].DisableProjectile();
-			}
-		}
+		transform = &entity->GetComponent<Transform>();
 	}
 
 	void Update() override
 	{
-		for (int i = 0; i < projectiles.size(); i++) {
-			if (projectiles[i].IsActive())
-			{
-				projectiles[i].Update();
-			}
-		}
+
 	}
 
 	void Draw() override
 	{
-		for (int i = 0; i < projectiles.size(); i++)
-		{
-			if (projectiles[i].IsActive())
-			{
-				projectiles[i].Draw();
-			}
-		}
+
 	}
 };

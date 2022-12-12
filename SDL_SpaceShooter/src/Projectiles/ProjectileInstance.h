@@ -1,29 +1,34 @@
 #pragma once
-#include "ProjCollider.h"
-#include "ProjTransform.h"
-#include "ProjectileRenderer.h"
 #include "../Vector2.h"
+#include "../ECS/Transform.h"
+#include "../ECS/Collider.h"
+#include "../ECS/SpriteRenderer.h"
 
 
-class ProjectileInstance
+class ProjectileInstance : public Component
 {
 private:
 	Vector2 velocity;
-	ProjCollider2D* collider;
-	ProjectileRenderer* renderer;
-	ProjTransform* transform;
+	Collider2D* collider;
+	SpriteRenderer* renderer;
+	Transform* transform;
 	bool isActive;
 
 public:
 
-	ProjectileInstance(ProjCollider2D* col, ProjectileRenderer* rend, ProjTransform* tran)
+	void Init() override
 	{
 		velocity = Vector2::Zero;
-		collider = col;
-		renderer = rend;
-		transform = tran;
+		transform = &entity->GetComponent<Transform>();
+		collider = &entity->GetComponent<Collider2D>();
+		renderer = &entity->GetComponent<SpriteRenderer>();
 		isActive = false;
 	}
+
+	//ProjectileInstance()
+	//{
+
+	//}
 
 	~ProjectileInstance()
 	{
@@ -47,14 +52,17 @@ public:
 		return isActive;
 	}
 
-	void Update()
+	void Update() override
 	{
+		if (!isActive)
+		{
+			return;
+		}
+
 		transform->position += velocity;
-		renderer->Update();
-		collider->Update();
 	}
 
-	void Draw()
+	void Draw() override
 	{
 		renderer->Draw();
 	}

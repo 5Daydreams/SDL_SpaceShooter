@@ -23,7 +23,7 @@ public:
 		colliderScale = scale;
 	}
 
-	void Init()
+	void Init() override
 	{
 		if (!entity->HasComponent<Transform>())
 		{
@@ -35,7 +35,7 @@ public:
 		//this->AddToColliderCache();
 	}
 
-	void Update()
+	void Update() override
 	{
 		colliderRect.x = static_cast<int>(transform->position.x);
 		colliderRect.y = static_cast<int>(transform->position.y);

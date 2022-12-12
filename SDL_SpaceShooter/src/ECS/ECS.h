@@ -147,4 +147,9 @@ public:
 
 		return *entity;
 	}
+
+	int GetCount()
+	{
+		return entitiesList.size();
+	}
 };

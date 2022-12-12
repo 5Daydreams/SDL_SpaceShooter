@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <vector>
 
+#include "ECS/ECS.h"
+
 class ICollider;
 
 class Game
@@ -22,6 +24,7 @@ public:
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
+	static ECSManager ComponentManager;
 	static std::vector<ICollider*> colliders;
 	static float deltaTime;
 	static void PrintSDLErrorLine();
