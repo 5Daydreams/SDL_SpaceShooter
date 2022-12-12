@@ -36,7 +36,8 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& stream, const Vector2& vec);
 
-	Vector2& Rotate(const float scalar);
+	Vector2& Rotate(const float radians);
+	Vector2 Rotate(const float radians) const;
 	Vector2& ClampMagnitude(const float scalar);
 	float Magnitude() const;
 

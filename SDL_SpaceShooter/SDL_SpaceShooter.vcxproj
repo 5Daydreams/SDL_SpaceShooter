@@ -28,12 +28,14 @@
   <ItemGroup>
     <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\ECS\Collider.h" />
-    <ClInclude Include="src\ECS\Components.h" />
-    <ClInclude Include="src\ECS\ProjectileInstance.h" />
+    <ClInclude Include="src\ICollider.h" />
+    <ClInclude Include="src\Projectiles\ProjCollider.h" />
+    <ClInclude Include="src\Projectiles\ProjectileInstance.h" />
     <ClInclude Include="src\ECS\Input.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\ProjectileManager.h" />
-    <ClInclude Include="src\ECS\ProjectileRenderer.h" />
+    <ClInclude Include="src\Projectiles\ProjectileRenderer.h" />
+    <ClInclude Include="src\Projectiles\ProjTransform.h" />
     <ClInclude Include="src\ECS\SpaceshipMotion.h" />
     <ClInclude Include="src\ECS\SpriteRenderer.h" />
     <ClInclude Include="src\ECS\Transform.h" />

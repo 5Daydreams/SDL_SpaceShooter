@@ -15,7 +15,7 @@ private:
 public:
 	float thrustSpeed = 0.05f;
 	float rotationSpeed = 0.1f;
-	float drag = 0.01f;
+	float drag = 0.008f;
 
 	void Init() override
 	{

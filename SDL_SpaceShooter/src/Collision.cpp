@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Collision.h"
-#include "ECS/Collider.h"
 
 bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
 {
@@ -14,11 +13,11 @@ bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
 	return collisionWasDetected;
 }
 
-bool Collision::AABB(const Collider2D& colliderA, const Collider2D& colliderB)
+bool Collision::AABB(const ICollider& colliderA, const ICollider& colliderB)
 {
-	if (AABB(colliderA.colliderRect, colliderB.colliderRect))
+	if (AABB(colliderA.GetColliderRect(), colliderB.GetColliderRect()))
 	{
-		std::cout << colliderA.tag << " hit: " << colliderB.tag << std::endl;
+		//std::cout << colliderA.tag << " rect hit " << colliderB.tag << " rect" << std::endl;
 		return true;
 	}
 	else

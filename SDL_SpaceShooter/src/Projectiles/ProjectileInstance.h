@@ -1,6 +1,6 @@
 #pragma once
-#include "Collider.h"
-#include "Transform.h"
+#include "ProjCollider.h"
+#include "ProjTransform.h"
 #include "ProjectileRenderer.h"
 #include "../Vector2.h"
 
@@ -9,14 +9,14 @@ class ProjectileInstance
 {
 private:
 	Vector2 velocity;
-	Collider2D* collider;
+	ProjCollider2D* collider;
 	ProjectileRenderer* renderer;
-	Transform* transform;
+	ProjTransform* transform;
 	bool isActive;
 
 public:
 
-	ProjectileInstance(Collider2D* col, ProjectileRenderer* rend, Transform* tran)
+	ProjectileInstance(ProjCollider2D* col, ProjectileRenderer* rend, ProjTransform* tran)
 	{
 		velocity = Vector2::Zero;
 		collider = col;
@@ -39,6 +39,7 @@ public:
 	void DisableProjectile()
 	{
 		isActive = false;
+		collider->isActive = false;
 	}
 
 	bool IsActive()
@@ -46,15 +47,11 @@ public:
 		return isActive;
 	}
 
-	void Init()
-	{
-		isActive = true;
-		collider->Init();
-	}
-
 	void Update()
 	{
 		transform->position += velocity;
+		renderer->Update();
+		collider->Update();
 	}
 
 	void Draw()

@@ -151,16 +151,25 @@ Vector2& Vector2::Rotate(const float radians)
 	return *this;
 }
 
+Vector2 Vector2::Rotate(const float radians) const
+{
+	return Vector2(
+		cos(radians) * this->x - sin(radians) * this->y,
+		sin(radians) * this->x + cos(radians) * this->y
+	);
+
+}
+
 Vector2& Vector2::ClampMagnitude(const float scalar)
 {
-	if(scalar < 0.f)
+	if (scalar < 0.f)
 	{
 		return *this;
 	}
 
 	const float vecSize = this->Magnitude();
 
-	if(vecSize > scalar)
+	if (vecSize > scalar)
 	{
 		this->Normalize();
 

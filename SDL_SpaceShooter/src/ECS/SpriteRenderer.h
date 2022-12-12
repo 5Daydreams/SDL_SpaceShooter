@@ -1,6 +1,7 @@
 #pragma once
 #include "../Game.h"
 #include "SDL.h"
+#include "SDL_image.h"
 #include "ECS.h"
 #include "Transform.h"
 
@@ -28,6 +29,10 @@ public:
 
 	void Init() override
 	{
+		if (&entity->GetComponent<Transform>() == nullptr)
+		{
+			&entity->AddComponent<Transform>();
+		}
 		transform = &entity->GetComponent<Transform>();
 
 		srcRect.x = srcRect.y = 0;
@@ -37,8 +42,8 @@ public:
 
 	void Update() override
 	{
-		destRect.w = 64 * transform->scale.x;
-		destRect.h = 64 * transform->scale.y;
+		destRect.w = static_cast<int>(64 * transform->scale.x);
+		destRect.h = static_cast<int>(64 * transform->scale.y);
 		destRect.x = static_cast<int>(transform->position.x);
 		destRect.y = static_cast<int>(transform->position.y);
 	}

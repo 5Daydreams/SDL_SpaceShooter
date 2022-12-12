@@ -1,12 +1,13 @@
 #pragma once
 #include "../Game.h"
 #include "SDL.h"
-#include "Transform.h"
+#include "SDL_image.h"
+#include "ProjTransform.h"
 
 class ProjectileRenderer
 {
 private:
-	Transform* transform;
+	ProjTransform* transform;
 	SDL_Texture* texture;
 	SDL_Rect srcRect, destRect;
 	float rotation = 0.0f;
@@ -20,7 +21,7 @@ public:
 		SDL_DestroyTexture(texture);
 	}
 
-	ProjectileRenderer(Transform *tran, const char* path)
+	ProjectileRenderer(ProjTransform *tran, const char* path)
 	{
 		transform = tran;
 		texture = IMG_LoadTexture(Game::renderer, path);
@@ -36,8 +37,8 @@ public:
 
 	void Update()
 	{
-		destRect.w = 64 * transform->scale.x;
-		destRect.h = 64 * transform->scale.y;
+		destRect.w = static_cast<int>(32 * transform->scale.x);
+		destRect.h = static_cast<int>(32 * transform->scale.y);
 		destRect.x = static_cast<int>(transform->position.x);
 		destRect.y = static_cast<int>(transform->position.y);
 	}

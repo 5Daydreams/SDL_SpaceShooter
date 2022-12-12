@@ -1,12 +1,10 @@
 #pragma once
 
 #include "SDL.h"
-#include "SDL_image.h"
 #include <filesystem>
-#include <iostream>
 #include <vector>
 
-class Collider2D;
+class ICollider;
 
 class Game
 {
@@ -24,7 +22,7 @@ public:
 
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
-	static std::vector<Collider2D*> colliders;
+	static std::vector<ICollider*> colliders;
 	static float deltaTime;
 	static void PrintSDLErrorLine();
 

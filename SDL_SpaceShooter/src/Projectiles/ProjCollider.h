@@ -1,38 +1,24 @@
 #pragma once
 #include <string>
+#include "SDL.h"
+#include "../Game.h"
 #include "../Vector2.h"
-#include "ECS.h"
-#include "Transform.h"
+#include "ProjTransform.h"
 #include "../ICollider.h"
 
-class Collider2D : public Component, public ICollider
+
+class ProjCollider2D : public ICollider
 {
 public:
 	SDL_Rect colliderRect;
 	Vector2 colliderScale;
 
-	Transform* transform;
+	ProjTransform* transform;
 
-	Collider2D(std::string tag) : ICollider(tag)
+	ProjCollider2D(ProjTransform* pTran, std::string tag) :ICollider(tag)
 	{
+		transform = pTran;
 		colliderScale = Vector2(1.0f, 1.0f);
-	}
-
-	Collider2D(std::string tag, Vector2 scale) : ICollider(tag)
-	{
-		colliderScale = scale;
-	}
-
-	void Init()
-	{
-		if (!entity->HasComponent<Transform>())
-		{
-			entity->AddComponent<Transform>();
-		}
-
-		transform = &entity->GetComponent<Transform>();
-
-		//this->AddToColliderCache();
 	}
 
 	void Update()

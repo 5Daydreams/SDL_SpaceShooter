@@ -5,13 +5,13 @@
 #include "ECS/Collider.h"
 #include "ECS/Input.h"
 #include "ECS/SpaceshipMotion.h"
-#include "ECS/ProjectileInstance.h"
 #include "ECS/ProjectileManager.h"
+#include "ICollider.h"
 
 #include "Vector2.h"
 #include "Collision.h"
 
-std::vector<Collider2D*> Game::colliders;
+std::vector<ICollider*> Game::colliders;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 float Game::deltaTime;
@@ -21,7 +21,7 @@ float lastTime = 0.0f;
 ECSManager manager;
 
 auto& player(manager.AddEntity());
-auto& wall(manager.AddEntity());
+auto& asteroid(manager.AddEntity());
 
 void Game::PrintSDLErrorLine()
 {
@@ -69,13 +69,13 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	player.AddComponent<SpriteRenderer>(stickman_texture_path.c_str());
 	player.AddComponent<SpaceshipMotion>();
 	player.AddComponent<Collider2D>("player");
-	player.AddComponent<ProjectileManager>();
+	player.AddComponent<ProjectileManager>(&player.GetComponent<Transform>());
 	player.AddComponent<Input>();
 
-	wall.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
+	asteroid.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
 	const std::string wall_texture_path = "assets/asteroid.png";
-	wall.AddComponent<SpriteRenderer>(wall_texture_path.c_str());
-	wall.AddComponent<Collider2D>("wall");
+	asteroid.AddComponent<SpriteRenderer>(wall_texture_path.c_str());
+	asteroid.AddComponent<Collider2D>("asteroid");
 }
 
 void Game::HandleEvents()
@@ -99,19 +99,42 @@ void Game::Update()
 	manager.Refresh();
 	manager.Update();
 
-	Collider2D& playerCollider = player.GetComponent<Collider2D>();
+	ICollider& playerCollider = player.GetComponent<Collider2D>();
 
-	for (Collider2D* cc : colliders)
+	for (int i = 0; i < colliders.size(); i++)
 	{
-		if (cc == &playerCollider)
-		{
-			continue;
-		}
+		ICollider* cc1 = colliders[i];
 
-		if (Collision::AABB(playerCollider, *cc))
+		for (int j = i + 1; j < colliders.size(); j++)
 		{
-			auto& phys = player.GetComponent<SpaceshipMotion>();
-			phys.SetVelocity(phys.GetVelocity() * -1);
+			ICollider* cc2 = colliders[j];
+
+			bool eitherIsDisabled = !cc1->isActive || !cc2->isActive;
+
+			if (eitherIsDisabled)
+			{
+				continue;
+			}
+
+			const bool collisionHappened = Collision::AABB(*cc1, *cc2);
+
+			if (!collisionHappened)
+			{
+				continue;
+			}
+
+			const bool playerHitAsteroid =
+				(cc1 == &playerCollider && cc2->tag == "asteroid")
+				|| (cc1->tag == "asteroid" && cc2 == &playerCollider);
+
+			if (playerHitAsteroid)
+			{
+				auto& playerPhys = player.GetComponent<SpaceshipMotion>();
+				playerPhys.SetVelocity(playerPhys.GetVelocity() * -1);
+
+				continue;
+			}
+
 		}
 	}
 

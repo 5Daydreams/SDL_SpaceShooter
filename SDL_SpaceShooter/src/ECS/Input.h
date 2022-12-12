@@ -89,7 +89,13 @@ public:
 
 	void Init() override
 	{
+		if (&entity->GetComponent<Transform>() == nullptr)
+		{
+			&entity->AddComponent<Transform>();
+		}
 		transform = &entity->GetComponent<Transform>();
+
+		//transform = &entity->GetComponent<Transform>();
 		phys = &entity->GetComponent<SpaceshipMotion>();
 		proj = &entity->GetComponent<ProjectileManager>();
 
@@ -113,7 +119,6 @@ public:
 
 		auto space = [this]()
 		{
-			std::cout << "Fired a thing";
 			proj->SpawnProjectile(this->transform->position, this->transform->forward);
 		};
 

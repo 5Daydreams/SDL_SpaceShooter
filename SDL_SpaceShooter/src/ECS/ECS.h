@@ -16,6 +16,7 @@ using ComponentID = std::size_t;
 inline ComponentID GetComponentTypeID()
 {
 	static ComponentID lastID = 0;
+	std::cout << "Component ID: " << lastID << std::endl;
 	return lastID++;
 }
 

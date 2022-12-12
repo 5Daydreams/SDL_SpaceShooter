@@ -47,9 +47,6 @@
     <ClInclude Include="src\ECS\Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\Components.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\ECS\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -68,10 +65,19 @@
     <ClInclude Include="src\ECS\ProjectileManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ProjectileInstance.h">
+    <ClInclude Include="src\Projectiles\ProjectileInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ProjectileRenderer.h">
+    <ClInclude Include="src\Projectiles\ProjectileRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Projectiles\ProjTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Projectiles\ProjCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ICollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
