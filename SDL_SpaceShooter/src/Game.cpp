@@ -11,7 +11,7 @@
 #include "Vector2.h"
 #include "Collision.h"
 
-std::vector<ICollider*> Game::colliders;
+std::vector<Collider2D*> Game::colliders;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 float Game::deltaTime;
@@ -112,11 +112,11 @@ void Game::Update()
 
 	for (int i = 0; i < colliders.size(); i++)
 	{
-		ICollider* cc1 = colliders[i];
+		Collider2D* cc1 = colliders[i];
 
 		for (int j = i + 1; j < colliders.size(); j++)
 		{
-			ICollider* cc2 = colliders[j];
+			Collider2D* cc2 = colliders[j];
 
 			bool eitherIsDisabled = !cc1->isActive || !cc2->isActive;
 
@@ -143,6 +143,19 @@ void Game::Update()
 
 				continue;
 			}
+
+			const bool projectile1HitAsteroid =
+				(cc1->tag == "projectile" && cc2->tag == "asteroid");
+
+			if (projectile1HitAsteroid)
+			{
+				cc1->entity->GetComponent<ProjectileInstance>().DisableProjectile();
+				cc1->entity->GetComponent<ProjectileInstance>().DisableProjectile();
+			}
+
+			const bool projectile2HitAsteroid =
+				(cc1->tag == "asteroid" && cc2->tag == "projectile");
+
 
 		}
 	}

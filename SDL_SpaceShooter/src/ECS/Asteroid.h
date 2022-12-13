@@ -4,7 +4,7 @@
 #include "Transform.h"
 #include "../WindowLoop.h"
 
-class SpaceshipMotion : public Component
+class Asteroid : public Component
 {
 private:
 	Transform* transform;
