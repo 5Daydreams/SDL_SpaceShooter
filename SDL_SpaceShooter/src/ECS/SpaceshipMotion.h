@@ -2,6 +2,10 @@
 #include "../Vector2.h"
 #include "ECS.h"
 #include "Transform.h"
+#include "../WindowLoop.h"
+
+static constexpr unsigned int WINDOW_W = 800;
+static constexpr unsigned int WINDOW_H = 640;
 
 class SpaceshipMotion : public Component
 {
@@ -58,5 +62,9 @@ public:
 		transform->position += velocity;
 
 		velocity -= velocity * drag;
+
+		// Perform the loop around the map's edges
+
+		WindowLoop::LoopOnWindow(transform);
 	}
 };

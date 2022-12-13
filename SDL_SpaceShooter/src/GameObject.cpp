@@ -1,13 +1,5 @@
 #include "GameObject.h"
 
-Game::Game()
-{
-}
-
-Game::~Game()
-{
-}
-
 GameObject::GameObject(const char* textureSheet)
 {
 	objectTexture = IMG_LoadTexture(Game::renderer, textureSheet);

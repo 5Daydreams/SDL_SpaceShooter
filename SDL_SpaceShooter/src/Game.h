@@ -21,16 +21,16 @@ public:
 	void Clean() const;
 
 	bool IsRunning() const;
-
+	
 	static SDL_Renderer* renderer;
 	static SDL_Event event;
 	static ECSManager ComponentManager;
 	static std::vector<ICollider*> colliders;
 	static float deltaTime;
+
 	static void PrintSDLErrorLine();
 
 private:
-
 	bool isRunning{};
 	SDL_Window* window{};
 };

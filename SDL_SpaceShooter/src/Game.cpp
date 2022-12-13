@@ -29,6 +29,15 @@ void Game::PrintSDLErrorLine()
 	std::cout << SDL_GetError() << std::endl;
 }
 
+
+Game::Game()
+{
+}
+
+Game::~Game()
+{
+}
+
 void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, bool fullscreen)
 {
 	int flags = 0;

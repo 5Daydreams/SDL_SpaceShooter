@@ -28,6 +28,7 @@
   <ItemGroup>
     <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\ECS\Collider.h" />
+    <ClInclude Include="src\WindowLoop.h" />
     <ClInclude Include="src\ICollider.h" />
     <ClInclude Include="src\Projectiles\ProjCollider.h" />
     <ClInclude Include="src\Projectiles\ProjectileInstance.h" />

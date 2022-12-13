@@ -3,17 +3,15 @@
 #define SDL_MAIN_HANDLED
 #include "SDL.h"
 #include "Game.h"
+#include "WindowLoop.h"
 
 Game* game = nullptr;
-
-static constexpr unsigned int WINDOW_W = 800;
-static constexpr unsigned int WINDOW_H = 640;
-
 
 int main(int argc, const char* argv[])
 {
 	game = new Game();
-	game->Init("Cpp_Speedrun", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_W, WINDOW_H, false);
+	game->Init("Cpp_Speedrun", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+		WindowLoop::window_w, WindowLoop::window_h, false);
 
 	const int FPS = 60;
 	const int frameDelay = 1000 / FPS;

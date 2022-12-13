@@ -80,5 +80,8 @@
     <ClInclude Include="src\ICollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\WindowLoop.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
