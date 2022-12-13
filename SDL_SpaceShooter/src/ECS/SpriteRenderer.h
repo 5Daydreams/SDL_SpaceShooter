@@ -14,6 +14,7 @@ private:
 	float rotation = 0.0f;
 
 public:
+	bool isActive = false;
 
 	SpriteRenderer() = default;
 
@@ -27,6 +28,16 @@ public:
 		texture = IMG_LoadTexture(Game::renderer, path);
 	}
 
+	void DisableRenderer()
+	{
+		isActive = false;
+	}
+
+	bool IsActive()
+	{
+		return isActive;
+	}
+
 	void Init() override
 	{
 		if (&entity->GetComponent<Transform>() == nullptr)
@@ -38,10 +49,17 @@ public:
 		srcRect.x = srcRect.y = 0;
 		srcRect.w = 64;
 		srcRect.h = 64;
+
+		isActive = true;
 	}
 
 	void Update() override
 	{
+		if (!isActive)
+		{
+			return;
+		}
+
 		destRect.w = static_cast<int>(64 * transform->scale.x);
 		destRect.h = static_cast<int>(64 * transform->scale.y);
 		destRect.x = static_cast<int>(transform->position.x);
@@ -60,6 +78,11 @@ public:
 
 	void Draw()	override
 	{
+		if (!isActive)
+		{
+			return;
+		}
+
 		double finalRotation = (transform->rotation + rotation) * 180.f / 3.14f;
 		SDL_RenderCopyEx(Game::renderer, texture, &srcRect, &destRect, finalRotation, NULL, SDL_FLIP_NONE);
 	}

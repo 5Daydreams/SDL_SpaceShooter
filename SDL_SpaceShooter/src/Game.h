@@ -7,7 +7,7 @@
 #include "ECS/Collider.h"
 #include "ECS/ECS.h"
 
-class ICollider;
+class Collider2D;
 
 class Game
 {

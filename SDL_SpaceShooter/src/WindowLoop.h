@@ -7,6 +7,29 @@ public:
 	inline static constexpr int window_w = 800;
 	inline static constexpr int window_h = 640;
 
+	static bool CheckOutOfBounds(Vector2 pos)
+	{
+		if (pos.x > static_cast<float>(window_w))
+		{
+			return true;
+		}
+		else if (pos.x < 0.0f)
+		{
+			return true;
+		}
+
+		if (pos.y > static_cast<float>(window_h))
+		{
+			return true;
+		}
+		else if (pos.y < 0.0f)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	static void LoopOnWindow(Transform* transform)
 	{
 		if (transform->position.x > static_cast<float>(window_w))

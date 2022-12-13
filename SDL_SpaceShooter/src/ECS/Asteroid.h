@@ -8,15 +8,13 @@ class Asteroid : public Component
 {
 private:
 	Transform* transform;
-	float thrust;
-	float torque;
-	float maxSpeed = 3.0f;
 	Vector2 velocity = Vector2::Zero;
+	const float minSpeed = 1.0f;
+	const float maxSpeed = 5.0f;
+	int size;
 
 public:
-	float thrustSpeed = 0.05f;
 	float rotationSpeed = 0.1f;
-	float drag = 0.008f;
 
 	void Init() override
 	{

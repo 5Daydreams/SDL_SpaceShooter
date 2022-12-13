@@ -14,7 +14,7 @@ public:
 	ICollider(std::string objTag)
 	{
 		tag = objTag;
-		Game::colliders.push_back(this);
+		//Game::colliders.push_back(this);
 	}
 
 	void SubscribeToCollisionCallback(std::function<void()> callback)

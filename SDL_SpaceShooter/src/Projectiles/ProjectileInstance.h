@@ -3,6 +3,7 @@
 #include "../ECS/Transform.h"
 #include "../ECS/Collider.h"
 #include "../ECS/SpriteRenderer.h"
+#include "../WindowLoop.h"
 
 
 class ProjectileInstance : public Component
@@ -13,6 +14,7 @@ private:
 	SpriteRenderer* renderer;
 	Transform* transform;
 	bool isActive;
+	const float projectileSpeed = 3.0f;
 
 public:
 
@@ -25,11 +27,6 @@ public:
 		isActive = false;
 	}
 
-	//ProjectileInstance()
-	//{
-
-	//}
-
 	~ProjectileInstance()
 	{
 	}
@@ -37,14 +34,22 @@ public:
 	void FireProjectile(Vector2 spawnPos, Vector2 spawnVel)
 	{
 		transform->position = spawnPos;
-		velocity = spawnVel;
+		velocity = spawnVel * projectileSpeed;
+		EnableProjectile();
+	}
+
+	void EnableProjectile()
+	{
 		isActive = true;
+		collider->isActive = true;
+		renderer->isActive = true;
 	}
 
 	void DisableProjectile()
 	{
 		isActive = false;
 		collider->isActive = false;
+		renderer->isActive = false;
 	}
 
 	bool IsActive()
@@ -60,6 +65,11 @@ public:
 		}
 
 		transform->position += velocity;
+
+		if (WindowLoop::CheckOutOfBounds(transform->position))
+		{
+			this->DisableProjectile();
+		}
 	}
 
 	void Draw() override
