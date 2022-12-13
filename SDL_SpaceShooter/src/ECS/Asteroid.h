@@ -31,23 +31,9 @@ public:
 		velocity = newVel;
 	}
 
-	void AddTorque(const float inputTorque)
+	void SetRotationSpeed(const float rotSpeed)
 	{
-		this->torque = inputTorque;
-
-		transform->rotation += inputTorque * rotationSpeed;
-	}
-
-	void AddThrust(const float inputThrust)
-	{
-		if (abs(inputThrust) < 0.001f)
-		{
-			thrust = 0.0f;
-			return;
-		}
-
-		thrust += inputThrust * thrustSpeed;
-		velocity += thrust * transform->forward;
+		transform->rotation += rotSpeed;
 	}
 
 	void Update() override
@@ -55,10 +41,6 @@ public:
 		velocity.ClampMagnitude(maxSpeed);
 
 		transform->position += velocity;
-
-		velocity -= velocity * drag;
-
-		// Perform the loop around the map's edges
 
 		WindowLoop::LoopOnWindow(transform);
 	}
