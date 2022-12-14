@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <vector>
 
-#include "ECS/Collider.h"
 #include "ECS/ECS.h"
 
 class Collider2D;

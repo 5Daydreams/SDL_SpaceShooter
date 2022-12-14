@@ -3,24 +3,31 @@
 #include "../Vector2.h"
 #include "ECS.h"
 #include "Transform.h"
-#include "../ICollider.h"
+#include "../Game.h"
 
-class Collider2D : public Component, public ICollider
+class Collider2D : public Component
 {
 public:
+	std::string tag;
+	bool isActive;
+
 	SDL_Rect colliderRect;
 	Vector2 colliderScale;
 
 	Transform* transform;
 
-	Collider2D(std::string tag) : ICollider(tag)
+	Collider2D(std::string colliderTag) : tag(colliderTag)
 	{
 		colliderScale = Vector2(1.0f, 1.0f);
+
+		Game::colliders.push_back(this);
 	}
 
-	Collider2D(std::string tag, Vector2 scale) : ICollider(tag)
+	Collider2D(std::string colliderTag, Vector2 scale) : tag(colliderTag)
 	{
 		colliderScale = scale;
+
+		Game::colliders.push_back(this);
 	}
 
 	void Init() override
@@ -44,7 +51,7 @@ public:
 		colliderRect.h = 64 * transform->scale.y * colliderScale.y;
 	}
 
-	SDL_Rect GetColliderRect() const override
+	SDL_Rect GetColliderRect() const
 	{
 		return colliderRect;
 	}

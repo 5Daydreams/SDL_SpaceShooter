@@ -80,15 +80,29 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	const std::string spaceship_texture_path = "assets/spaceship.png";
 	player.AddComponent<SpriteRenderer>(spaceship_texture_path.c_str());
 	player.AddComponent<SpaceshipMotion>();
-	player.AddComponent<Collider2D>("player").isActive = true;
+	player.AddComponent<Collider2D>("player");
+	player.GetComponent<Collider2D>().isActive = true;
 	player.AddComponent<ProjectileManager>();
 	player.AddComponent<Input>();
 
 	asteroid.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
 	const std::string asteroid_texture_path = "assets/asteroid.png";
 	asteroid.AddComponent<SpriteRenderer>(asteroid_texture_path.c_str());
-	asteroid.AddComponent<Collider2D>("asteroid").isActive = true;
+	asteroid.AddComponent<Collider2D>("asteroid");
+	asteroid.GetComponent<Collider2D>().isActive = true;
 	asteroid.AddComponent<Asteroid>();
+}
+
+void SpawnAsteroid(Vector2 position)
+{
+	Entity& newAsteroid(Game::ComponentManager.AddEntity());
+
+	newAsteroid.AddComponent<Transform>(position, Vector2(1.0f, 1.0f));
+	const std::string asteroid_texture_path = "assets/asteroid.png";
+	newAsteroid.AddComponent<SpriteRenderer>(asteroid_texture_path.c_str());
+	newAsteroid.AddComponent<Collider2D>("asteroid");
+	newAsteroid.GetComponent<Collider2D>().isActive = true;
+	newAsteroid.AddComponent<Asteroid>();
 }
 
 void Game::HandleEvents()
@@ -99,8 +113,26 @@ void Game::HandleEvents()
 	case SDL_QUIT:
 		isRunning = false;
 		break;
+	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_p)
+		{
+			// printf("The 'P' key is pressed.\n");
+			Vector2 center = {
+				WindowLoop::window_w / 2.0f,
+				WindowLoop::window_h / 2.0f
+			};
+
+			SpawnAsteroid(center);
+		}
+		break;
+
 	default:
 		break;
+	}
+
+	if (false)
+	{
+
 	}
 }
 
@@ -140,8 +172,8 @@ void Game::Update()
 
 			if (playerHitAsteroid)
 			{
-				std::cout << "Hit asteroid" << std::endl;
 				auto& playerPhys = player.GetComponent<SpaceshipMotion>();
+
 				playerPhys.SetVelocity(playerPhys.GetVelocity() * -1);
 
 				continue;
@@ -152,8 +184,8 @@ void Game::Update()
 
 			if (projectile1HitAsteroid)
 			{
-				std::cout << "Disabling projectile" << std::endl;
 				cc1->entity->GetComponent<ProjectileInstance>().DisableProjectile();
+				cc2->entity->GetComponent<Asteroid>().DamageThis();
 			}
 
 			const bool projectile2HitAsteroid =
@@ -161,21 +193,11 @@ void Game::Update()
 
 			if (projectile2HitAsteroid)
 			{
-				std::cout << "Disabling projectile" << std::endl;
+				cc1->entity->GetComponent<Asteroid>().DamageThis();
 				cc2->entity->GetComponent<ProjectileInstance>().DisableProjectile();
 			}
 		}
 	}
-
-	//int x = asteroid.GetComponent<Collider2D>().GetColliderRect().x;
-	//int y = asteroid.GetComponent<Collider2D>().GetColliderRect().y;
-
-	//std::cout << "Asteroid collider at : (" << x << ", " << y << ")" << std::endl;
-
-	//x = player.GetComponent<Collider2D>().GetColliderRect().x;
-	//y = player.GetComponent<Collider2D>().GetColliderRect().y;
-
-	//std::cout << "Player collider at : (" << x << ", " << y << ")" << std::endl;
 
 	lastTime = currTime;
 }

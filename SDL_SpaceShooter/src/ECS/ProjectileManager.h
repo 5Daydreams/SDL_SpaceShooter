@@ -6,14 +6,14 @@
 #include "Projectiles/ProjectileInstance.h"
 
 
-const int PROJECTILE_POOL_COUNT = 100;
+const int PROJECTILE_POOL_COUNT = 20;
 
 class ProjectileManager : public Component
 {
 private:
 	std::vector<ProjectileInstance*> projectiles;
-	const Vector2 offset = Vector2(0, -16);
-	const Vector2 baseOffset = Vector2(16, 16);
+	const Vector2 offset = Vector2(0, -32);
+	const Vector2 baseOffset = Vector2(32, 32);
 	const Transform* transform;
 
 public:
@@ -26,7 +26,7 @@ public:
 		{
 			Entity& temp(Game::ComponentManager.AddEntity());
 
-			temp.AddComponent<Transform>();
+			temp.AddComponent<Transform>().scale = Vector2(0.15f,0.15f);
 			temp.AddComponent<SpriteRenderer>("assets/projectile.png");
 			temp.AddComponent<Collider2D>("projectile");
 			ProjectileInstance& proj = temp.AddComponent<ProjectileInstance>();
@@ -58,16 +58,12 @@ public:
 			return;
 		}
 
-		const Vector2 offsetScaled = Vector2
-		(
-			offset.x * transform->scale.x,
-			offset.y * transform->scale.y
-		);
+		//const Vector2 offsetScaled = (baseOffset + offset) * transform->scale;
 
-		const Vector2 offsetRotated = offsetScaled.Rotate(transform->rotation);
+		const Vector2 offsetFixed = baseOffset + offset.Rotate(transform->rotation);
 
 		// Note.: I can't find where the error is, but the *(-1) is required to align the projectile velocity to the actual firing direction
-		projectiles[index]->FireProjectile(spawnPos + baseOffset + offsetRotated, spawnVel * -1.0f);
+		projectiles[index]->FireProjectile(spawnPos + offsetFixed, spawnVel * -1.0f);
 	}
 
 	void DisableProjectile(int index)

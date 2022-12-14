@@ -11,10 +11,11 @@ private:
 	Transform* transform;
 	Vector2 velocity = Vector2::Zero;
 	const float maxSpeed = 5.0f;
-	int size;
+	int size = 3;
+	int currentHealth = 10;
 
 public:
-	float rotationSpeed = 0.1f;
+	float rotationSpeed = 0.07f;
 
 	void Init() override
 	{
@@ -30,6 +31,16 @@ public:
 		if (velocity.Magnitude() < 0.2f)
 		{
 			velocity *= 10.0f;
+		}
+	}
+
+	void DamageThis()
+	{
+		currentHealth--;
+
+		if(currentHealth <= 0)
+		{
+			entity->Destroy();
 		}
 	}
 
@@ -53,6 +64,7 @@ public:
 		velocity.ClampMagnitude(maxSpeed);
 
 		transform->position += velocity;
+		transform->rotation += rotationSpeed;
 
 		WindowLoop::LoopOnWindow(transform);
 	}

@@ -13,7 +13,7 @@ bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
 	return collisionWasDetected;
 }
 
-bool Collision::AABB(const ICollider& colliderA, const ICollider& colliderB)
+bool Collision::AABB(const Collider2D& colliderA, const Collider2D& colliderB)
 {
 	if (AABB(colliderA.GetColliderRect(), colliderB.GetColliderRect()))
 	{

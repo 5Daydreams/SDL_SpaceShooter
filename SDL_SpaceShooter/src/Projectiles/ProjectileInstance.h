@@ -14,7 +14,7 @@ private:
 	SpriteRenderer* renderer;
 	Transform* transform;
 	bool isActive;
-	const float projectileSpeed = 3.0f;
+	const float projectileSpeed = 17.0f;
 
 public:
 
