@@ -3,13 +3,13 @@
 #include "ECS.h"
 #include "Transform.h"
 #include "../WindowLoop.h"
+#include "../Random.h"
 
 class Asteroid : public Component
 {
 private:
 	Transform* transform;
 	Vector2 velocity = Vector2::Zero;
-	const float minSpeed = 1.0f;
 	const float maxSpeed = 5.0f;
 	int size;
 
@@ -19,6 +19,18 @@ public:
 	void Init() override
 	{
 		transform = &entity->GetComponent<Transform>();
+
+		velocity = {
+			Random::RealRange(-3.0f,3.0f),
+			Random::RealRange(-3.0f,3.0f)
+		};
+
+		velocity.ClampMagnitude(maxSpeed);
+
+		if (velocity.Magnitude() < 0.2f)
+		{
+			velocity *= 10.0f;
+		}
 	}
 
 	Vector2 GetVelocity()

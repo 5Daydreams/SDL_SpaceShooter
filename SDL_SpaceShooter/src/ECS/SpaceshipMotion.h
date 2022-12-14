@@ -10,7 +10,7 @@ private:
 	Transform* transform;
 	float thrust;
 	float torque;
-	float maxSpeed = 3.0f;
+	float maxSpeed = 4.0f;
 	Vector2 velocity = Vector2::Zero;
 
 public:

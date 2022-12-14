@@ -10,6 +10,8 @@
 
 #include "Vector2.h"
 #include "Collision.h"
+#include "ECS/Asteroid.h"
+#include "Random.h"
 
 std::vector<Collider2D*> Game::colliders;
 SDL_Renderer* Game::renderer = nullptr;
@@ -72,19 +74,21 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 		isRunning = false;
 	}
 
+	Random();
 
 	player.AddComponent<Transform>(50.0f, 50.0f, Vector2(1.0f, 1.0f));
-	const std::string stickman_texture_path = "assets/spaceship.png";
-	player.AddComponent<SpriteRenderer>(stickman_texture_path.c_str());
+	const std::string spaceship_texture_path = "assets/spaceship.png";
+	player.AddComponent<SpriteRenderer>(spaceship_texture_path.c_str());
 	player.AddComponent<SpaceshipMotion>();
 	player.AddComponent<Collider2D>("player").isActive = true;
 	player.AddComponent<ProjectileManager>();
 	player.AddComponent<Input>();
 
 	asteroid.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
-	const std::string wall_texture_path = "assets/asteroid.png";
-	asteroid.AddComponent<SpriteRenderer>(wall_texture_path.c_str());
+	const std::string asteroid_texture_path = "assets/asteroid.png";
+	asteroid.AddComponent<SpriteRenderer>(asteroid_texture_path.c_str());
 	asteroid.AddComponent<Collider2D>("asteroid").isActive = true;
+	asteroid.AddComponent<Asteroid>();
 }
 
 void Game::HandleEvents()
@@ -107,8 +111,6 @@ void Game::Update()
 
 	ComponentManager.Refresh();
 	ComponentManager.Update();
-
-	ICollider& playerCollider = player.GetComponent<Collider2D>();
 
 	for (int i = 0; i < colliders.size(); i++)
 	{
@@ -138,6 +140,7 @@ void Game::Update()
 
 			if (playerHitAsteroid)
 			{
+				std::cout << "Hit asteroid" << std::endl;
 				auto& playerPhys = player.GetComponent<SpaceshipMotion>();
 				playerPhys.SetVelocity(playerPhys.GetVelocity() * -1);
 
@@ -149,16 +152,30 @@ void Game::Update()
 
 			if (projectile1HitAsteroid)
 			{
-				cc1->entity->GetComponent<ProjectileInstance>().DisableProjectile();
+				std::cout << "Disabling projectile" << std::endl;
 				cc1->entity->GetComponent<ProjectileInstance>().DisableProjectile();
 			}
 
 			const bool projectile2HitAsteroid =
 				(cc1->tag == "asteroid" && cc2->tag == "projectile");
 
-
+			if (projectile2HitAsteroid)
+			{
+				std::cout << "Disabling projectile" << std::endl;
+				cc2->entity->GetComponent<ProjectileInstance>().DisableProjectile();
+			}
 		}
 	}
+
+	//int x = asteroid.GetComponent<Collider2D>().GetColliderRect().x;
+	//int y = asteroid.GetComponent<Collider2D>().GetColliderRect().y;
+
+	//std::cout << "Asteroid collider at : (" << x << ", " << y << ")" << std::endl;
+
+	//x = player.GetComponent<Collider2D>().GetColliderRect().x;
+	//y = player.GetComponent<Collider2D>().GetColliderRect().y;
+
+	//std::cout << "Player collider at : (" << x << ", " << y << ")" << std::endl;
 
 	lastTime = currTime;
 }
