@@ -150,6 +150,8 @@ void Game::Update()
 
 	ComponentManager.Update();
 
+	// Sort the colliders somehow
+
 	for (int i = 0; i < colliders.size(); i++)
 	{
 		Collider2D* cc1 = colliders[i];

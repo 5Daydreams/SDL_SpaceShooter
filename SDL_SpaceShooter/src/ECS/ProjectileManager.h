@@ -11,7 +11,8 @@ const int PROJECTILE_POOL_COUNT = 20;
 class ProjectileManager : public Component
 {
 private:
-	std::vector<ProjectileInstance*> projectiles;
+	//std::vector<ProjectileInstance*> projectiles;
+	ProjectileInstance* projectiles[PROJECTILE_POOL_COUNT];
 	const Vector2 offset = Vector2(0, -32);
 	const Vector2 baseOffset = Vector2(32, 32);
 	const Transform* transform;
@@ -20,7 +21,7 @@ public:
 
 	ProjectileManager()
 	{
-		projectiles = std::vector<ProjectileInstance*>();
+		//projectiles = std::vector<ProjectileInstance*>();
 
 		for (int i = 0; i < PROJECTILE_POOL_COUNT; i++)
 		{
@@ -31,7 +32,7 @@ public:
 			temp.AddComponent<Collider2D>("projectile");
 			ProjectileInstance& proj = temp.AddComponent<ProjectileInstance>();
 
-			projectiles.push_back(&proj);
+			projectiles[i] = &proj;
 			proj.DisableProjectile();
 		}
 	}

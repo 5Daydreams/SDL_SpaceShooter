@@ -29,7 +29,7 @@ public:
 	Vector2 GetVelocity()
 	{
 		return velocity;
-	}
+	}	
 
 	void SetVelocity(Vector2 newVel)
 	{
