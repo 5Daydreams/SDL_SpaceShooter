@@ -9,40 +9,27 @@ class Asteroid : public Component
 {
 private:
 	Transform* transform;
-	Vector2 velocity = Vector2::Zero;
-	const float maxSpeed = 5.0f;
-	int size = 3;
-	int currentHealth = 10;
+	Collider2D* collider;
 
-public:
+	const float maxSpeed = 5.0f;
+	Vector2 velocity = Vector2::Zero;
 	float rotationSpeed = 0.07f;
 
-	void Init() override
+	bool bufferDamage = false;
+
+	int splitSize = 3;
+	int currentHealth = 10;
+
+	const std::function<void(const Collider2D&)> collisionCallback = [this](const Collider2D& other)
 	{
-		transform = &entity->GetComponent<Transform>();
-
-		velocity = {
-			Random::RealRange(-3.0f,3.0f),
-			Random::RealRange(-3.0f,3.0f)
-		};
-
-		velocity.ClampMagnitude(maxSpeed);
-
-		if (velocity.Magnitude() < 0.2f)
+		if (other.tag == "projectile")
 		{
-			velocity *= 10.0f;
+			std::cout << "Asteroid took damage" << std::endl;
+			bufferDamage = true;
 		}
-	}
+	};
 
-	void DamageThis()
-	{
-		currentHealth--;
-
-		if(currentHealth <= 0)
-		{
-			entity->Destroy();
-		}
-	}
+public:
 
 	Vector2 GetVelocity()
 	{
@@ -59,7 +46,51 @@ public:
 		transform->rotation += rotSpeed;
 	}
 
-	void Update() override
+	void RandomizeVelocity()
+	{
+		velocity = {
+			Random::RealRange(-3.0f,3.0f),
+			Random::RealRange(-3.0f,3.0f)
+		};
+
+		velocity.ClampMagnitude(maxSpeed);
+
+		if (velocity.Magnitude() < 0.2f)
+		{
+			velocity *= 10.0f;
+		}
+	}
+
+	void Init() override
+	{
+		transform = &entity->GetComponent<Transform>();
+		collider = &entity->GetComponent<Collider2D>();
+
+		collider->SubscribeToCollisionCallback(collisionCallback);
+
+		RandomizeVelocity();
+	}
+
+private:
+
+	void DamageLogic()
+	{
+		if (!bufferDamage)
+		{
+			return;
+		}
+
+		bufferDamage = false;
+
+		currentHealth--;
+
+		if (currentHealth <= 0)
+		{
+			entity->Destroy();
+		}
+	}
+
+	void MovementLogic()
 	{
 		velocity.ClampMagnitude(maxSpeed);
 
@@ -67,5 +98,13 @@ public:
 		transform->rotation += rotationSpeed;
 
 		WindowLoop::LoopOnWindow(transform);
+	}
+
+public:
+
+	void Update() override
+	{
+		MovementLogic();
+		DamageLogic();
 	}
 };

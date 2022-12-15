@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <string>
 #include "../Vector2.h"
 #include "ECS.h"
@@ -14,6 +15,7 @@ public:
 	SDL_Rect colliderRect;
 	Vector2 colliderScale;
 
+	std::vector<std::function<void(const Collider2D&)>> onCollision = std::vector<std::function<void(const Collider2D&)>>{};
 	Transform* transform;
 
 	Collider2D(std::string colliderTag) : tag(colliderTag)
@@ -38,8 +40,6 @@ public:
 		}
 
 		transform = &entity->GetComponent<Transform>();
-
-		//this->AddToColliderCache();
 	}
 
 	void Update() override
@@ -54,5 +54,18 @@ public:
 	SDL_Rect GetColliderRect() const
 	{
 		return colliderRect;
+	}
+
+	void SubscribeToCollisionCallback(const std::function<void(const Collider2D& other)>& callback)
+	{
+		onCollision.push_back(callback);
+	}
+
+	void TriggerCollisionCallback(const Collider2D& other) const
+	{
+		for (const auto& callback : onCollision)
+		{
+			callback(other);
+		}
 	}
 };

@@ -15,9 +15,15 @@ bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
 
 bool Collision::AABB(const Collider2D& colliderA, const Collider2D& colliderB)
 {
+	if (bool eitherIsDisabled = (!colliderA.isActive) || (!colliderB.isActive))
+	{
+		return false;
+	}
+
 	if (AABB(colliderA.GetColliderRect(), colliderB.GetColliderRect()))
 	{
-		//std::cout << colliderA.tag << " rect hit " << colliderB.tag << " rect" << std::endl;
+		colliderA.TriggerCollisionCallback(colliderB);
+		colliderB.TriggerCollisionCallback(colliderA);
 		return true;
 	}
 	else

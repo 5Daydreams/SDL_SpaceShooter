@@ -7,7 +7,7 @@
 #include "../ICollider.h"
 
 
-class ProjCollider2D : public ICollider
+class ProjCollider2D
 {
 public:
 	SDL_Rect colliderRect;
@@ -15,7 +15,7 @@ public:
 
 	ProjTransform* transform;
 
-	ProjCollider2D(ProjTransform* pTran, std::string tag) :ICollider(tag)
+	ProjCollider2D(ProjTransform* pTran, std::string tag)
 	{
 		transform = pTran;
 		colliderScale = Vector2(1.0f, 1.0f);
@@ -30,8 +30,8 @@ public:
 		colliderRect.h = 64 * transform->scale.y * colliderScale.y;
 	}
 
-	SDL_Rect GetColliderRect() const override
-	{
-		return colliderRect;
-	}
+	//SDL_Rect GetColliderRect() const override
+	//{
+	//	return colliderRect;
+	//}
 };

@@ -7,14 +7,11 @@ private:
 	static std::mt19937 gen;
 
 public:
-	Random()
+
+	static void Init()
 	{
 		std::random_device rd;
 		gen.seed(rd());
-	}
-
-	~Random()
-	{
 	}
 
 	template<typename T>

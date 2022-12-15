@@ -10,7 +10,7 @@ Game* game = nullptr;
 int main(int argc, const char* argv[])
 {
 	game = new Game();
-	game->Init("Cpp_Speedrun", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+	game->Init("SDL Space Shooter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		WindowLoop::window_w, WindowLoop::window_h, false);
 
 	const int FPS = 60;

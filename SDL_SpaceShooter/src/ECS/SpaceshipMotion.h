@@ -8,15 +8,18 @@ class SpaceshipMotion : public Component
 {
 private:
 	Transform* transform;
-	float thrust;
+
 	float torque;
-	float maxSpeed = 4.0f;
+	float rotationSpeed = 0.1f;
+
+	float thrust;
+	float thrustSpeed = 0.05f;
+	float drag = 0.008f;
+
 	Vector2 velocity = Vector2::Zero;
+	float maxSpeed = 4.0f;
 
 public:
-	float thrustSpeed = 0.05f;
-	float rotationSpeed = 0.1f;
-	float drag = 0.008f;
 
 	void Init() override
 	{
@@ -52,16 +55,22 @@ public:
 		velocity += thrust * transform->forward;
 	}
 
-	void Update() override
+private:
+
+	void MovementLogic()
 	{
 		velocity.ClampMagnitude(maxSpeed);
 
 		transform->position += velocity;
-
 		velocity -= velocity * drag;
 
-		// Perform the loop around the map's edges
-
 		WindowLoop::LoopOnWindow(transform);
+	}
+
+public:
+
+	void Update() override
+	{
+		MovementLogic();
 	}
 };

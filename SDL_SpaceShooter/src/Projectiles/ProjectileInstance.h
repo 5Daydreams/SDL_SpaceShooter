@@ -8,6 +8,14 @@
 
 class ProjectileInstance : public Component
 {
+public:
+	void DisableProjectile()
+	{
+		isActive = false;
+		collider->isActive = false;
+		renderer->isActive = false;
+	}
+
 private:
 	Vector2 velocity;
 	Collider2D* collider;
@@ -16,8 +24,30 @@ private:
 	bool isActive;
 	const float projectileSpeed = 17.0f;
 
+	const std::function<void(const Collider2D&)> collisionCallback = [this](const Collider2D& other)
+	{
+		if (other.tag == "asteroid")
+		{
+			DisableProjectile();
+		}
+	};
+
 public:
 
+	~ProjectileInstance() {}
+
+	bool IsActive()
+	{
+		return isActive;
+	}
+
+	void EnableProjectile()
+	{
+		isActive = true;
+		collider->isActive = true;
+		renderer->isActive = true;
+	}
+	
 	void Init() override
 	{
 		velocity = Vector2::Zero;
@@ -25,10 +55,8 @@ public:
 		collider = &entity->GetComponent<Collider2D>();
 		renderer = &entity->GetComponent<SpriteRenderer>();
 		isActive = false;
-	}
 
-	~ProjectileInstance()
-	{
+		collider->SubscribeToCollisionCallback(collisionCallback);
 	}
 
 	void FireProjectile(Vector2 spawnPos, Vector2 spawnVel)
@@ -38,23 +66,14 @@ public:
 		EnableProjectile();
 	}
 
-	void EnableProjectile()
+	void MovemementLogic()
 	{
-		isActive = true;
-		collider->isActive = true;
-		renderer->isActive = true;
-	}
+		transform->position += velocity;
 
-	void DisableProjectile()
-	{
-		isActive = false;
-		collider->isActive = false;
-		renderer->isActive = false;
-	}
-
-	bool IsActive()
-	{
-		return isActive;
+		if (WindowLoop::CheckOutOfBounds(transform->position))
+		{
+			this->DisableProjectile();
+		}
 	}
 
 	void Update() override
@@ -64,12 +83,7 @@ public:
 			return;
 		}
 
-		transform->position += velocity;
-
-		if (WindowLoop::CheckOutOfBounds(transform->position))
-		{
-			this->DisableProjectile();
-		}
+		MovemementLogic();
 	}
 
 	void Draw() override

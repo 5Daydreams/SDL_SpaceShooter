@@ -16,6 +16,7 @@
 std::vector<Collider2D*> Game::colliders;
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
+
 float Game::deltaTime;
 float currTime = 0.0f;
 float lastTime = 0.0f;
@@ -23,22 +24,37 @@ float lastTime = 0.0f;
 ECSManager Game::ComponentManager;
 
 Entity& player(Game::ComponentManager.AddEntity());
-Entity& asteroid(Game::ComponentManager.AddEntity());
-
+//Entity& asteroid(Game::ComponentManager.AddEntity());
 
 void Game::PrintSDLErrorLine()
 {
 	std::cout << SDL_GetError() << std::endl;
 }
 
+Game::Game() {}
 
-Game::Game()
+Game::~Game() {}
+
+bool Game::IsRunning() const
 {
+	return isRunning;
+};
+
+void SpawnAsteroid(Vector2 position)
+{
+	Entity& newAsteroid(Game::ComponentManager.AddEntity());
+
+	newAsteroid.AddComponent<Transform>(position, Vector2(1.0f, 1.0f));
+
+	const std::string asteroid_texture_path = "assets/asteroid.png";
+	newAsteroid.AddComponent<SpriteRenderer>(asteroid_texture_path.c_str());
+
+	newAsteroid.AddComponent<Collider2D>("asteroid");
+	newAsteroid.GetComponent<Collider2D>().isActive = true;
+
+	newAsteroid.AddComponent<Asteroid>();
 }
 
-Game::~Game()
-{
-}
 
 void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, bool fullscreen)
 {
@@ -47,7 +63,6 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	{
 		flags = SDL_WINDOW_FULLSCREEN;
 	}
-
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
@@ -74,7 +89,7 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 		isRunning = false;
 	}
 
-	Random();
+	Random::Init();
 
 	player.AddComponent<Transform>(50.0f, 50.0f, Vector2(1.0f, 1.0f));
 	const std::string spaceship_texture_path = "assets/spaceship.png";
@@ -85,24 +100,7 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	player.AddComponent<ProjectileManager>();
 	player.AddComponent<Input>();
 
-	asteroid.AddComponent<Transform>(300.0f, 300.0f, Vector2(1.0f, 1.0f));
-	const std::string asteroid_texture_path = "assets/asteroid.png";
-	asteroid.AddComponent<SpriteRenderer>(asteroid_texture_path.c_str());
-	asteroid.AddComponent<Collider2D>("asteroid");
-	asteroid.GetComponent<Collider2D>().isActive = true;
-	asteroid.AddComponent<Asteroid>();
-}
-
-void SpawnAsteroid(Vector2 position)
-{
-	Entity& newAsteroid(Game::ComponentManager.AddEntity());
-
-	newAsteroid.AddComponent<Transform>(position, Vector2(1.0f, 1.0f));
-	const std::string asteroid_texture_path = "assets/asteroid.png";
-	newAsteroid.AddComponent<SpriteRenderer>(asteroid_texture_path.c_str());
-	newAsteroid.AddComponent<Collider2D>("asteroid");
-	newAsteroid.GetComponent<Collider2D>().isActive = true;
-	newAsteroid.AddComponent<Asteroid>();
+	SpawnAsteroid(Vector2(300.0f, 300.0f));
 }
 
 void Game::HandleEvents()
@@ -129,11 +127,6 @@ void Game::HandleEvents()
 	default:
 		break;
 	}
-
-	if (false)
-	{
-
-	}
 }
 
 void Game::Update()
@@ -152,13 +145,6 @@ void Game::Update()
 		{
 			Collider2D* cc2 = colliders[j];
 
-			bool eitherIsDisabled = !cc1->isActive || !cc2->isActive;
-
-			if (eitherIsDisabled)
-			{
-				continue;
-			}
-
 			const bool collisionHappened = Collision::AABB(*cc1, *cc2);
 
 			if (!collisionHappened)
@@ -166,36 +152,7 @@ void Game::Update()
 				continue;
 			}
 
-			const bool playerHitAsteroid =
-				(cc1->tag == "player" && cc2->tag == "asteroid")
-				|| (cc1->tag == "asteroid" && cc2->tag == "player");
 
-			if (playerHitAsteroid)
-			{
-				auto& playerPhys = player.GetComponent<SpaceshipMotion>();
-
-				playerPhys.SetVelocity(playerPhys.GetVelocity() * -1);
-
-				continue;
-			}
-
-			const bool projectile1HitAsteroid =
-				(cc1->tag == "projectile" && cc2->tag == "asteroid");
-
-			if (projectile1HitAsteroid)
-			{
-				cc1->entity->GetComponent<ProjectileInstance>().DisableProjectile();
-				cc2->entity->GetComponent<Asteroid>().DamageThis();
-			}
-
-			const bool projectile2HitAsteroid =
-				(cc1->tag == "asteroid" && cc2->tag == "projectile");
-
-			if (projectile2HitAsteroid)
-			{
-				cc1->entity->GetComponent<Asteroid>().DamageThis();
-				cc2->entity->GetComponent<ProjectileInstance>().DisableProjectile();
-			}
 		}
 	}
 
@@ -219,5 +176,3 @@ void Game::Clean() const
 
 	std::cout << "Quitting application." << std::endl;
 }
-
-bool Game::IsRunning() const { return isRunning; };
