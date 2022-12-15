@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "SDL.h"
 #include "../Game.h"
 #include "../Vector2.h"
 #include "ProjTransform.h"

@@ -66,7 +66,7 @@ public:
 		EnableProjectile();
 	}
 
-	void MovemementLogic()
+	void MovementLogic()
 	{
 		transform->position += velocity;
 
@@ -83,7 +83,7 @@ public:
 			return;
 		}
 
-		MovemementLogic();
+		MovementLogic();
 	}
 
 	void Draw() override

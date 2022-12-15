@@ -1,6 +1,7 @@
 #pragma once
 #include "../Vector2.h"
 #include "ECS.h"
+#include "Health.h"
 #include "Transform.h"
 #include "../WindowLoop.h"
 #include "../Random.h"
@@ -9,7 +10,7 @@ class Asteroid : public Component
 {
 private:
 	Transform* transform;
-	Collider2D* collider;
+	Health* health;
 
 	const float maxSpeed = 5.0f;
 	Vector2 velocity = Vector2::Zero;
@@ -17,18 +18,22 @@ private:
 
 	bool bufferDamage = false;
 
-	int splitSize = 3;
+	int splitSize;
 	int currentHealth = 10;
 
-	const std::function<void(const Collider2D&)> collisionCallback = [this](const Collider2D& other)
+	const std::function<void()> deathCallback = [this]()
 	{
-		if (other.tag == "projectile")
-		{
-			bufferDamage = true;
-		}
+		std::cout << "Entity died" << std::endl;
+		entity->Destroy();
 	};
 
 public:
+
+	Asteroid() : splitSize(1) {}
+
+	Asteroid(int size) : splitSize(size) {}
+
+	~Asteroid() {}
 
 	Vector2 GetVelocity()
 	{
@@ -45,6 +50,8 @@ public:
 		transform->rotation += rotSpeed;
 	}
 
+private:
+
 	void RandomizeVelocity()
 	{
 		velocity = {
@@ -60,37 +67,6 @@ public:
 		}
 	}
 
-	void Init() override
-	{
-		transform = &entity->GetComponent<Transform>();
-		collider = &entity->GetComponent<Collider2D>();
-
-		collider->SubscribeToCollisionCallback(collisionCallback);
-
-		RandomizeVelocity();
-	}
-
-private:
-
-	void DamageLogic()
-	{
-		if (!bufferDamage)
-		{
-			return;
-		}
-
-		bufferDamage = false;
-
-		currentHealth--;
-		std::cout << "Asteroid took damage" << std::endl;
-
-		if (currentHealth <= 0)
-		{
-			std::cout << "Asteroid died" << std::endl;
-			entity->Destroy();
-		}
-	}
-
 	void MovementLogic()
 	{
 		velocity.ClampMagnitude(maxSpeed);
@@ -103,9 +79,18 @@ private:
 
 public:
 
+	void Init() override
+	{
+		transform = &entity->GetComponent<Transform>();
+		health = &entity->GetComponent<Health>();
+
+		health->SubscribeToDeathCallback(deathCallback);
+
+		RandomizeVelocity();
+	}
+
 	void Update() override
 	{
 		MovementLogic();
-		DamageLogic();
 	}
 };

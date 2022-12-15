@@ -6,12 +6,12 @@
 #include "ECS/Input.h"
 #include "ECS/SpaceshipMotion.h"
 #include "ECS/ProjectileManager.h"
-#include "ICollider.h"
 
 #include "Vector2.h"
 #include "Collision.h"
 #include "ECS/Asteroid.h"
 #include "Random.h"
+#include "ECS/Player.h"
 
 std::vector<Collider2D*> Game::colliders;
 SDL_Renderer* Game::renderer = nullptr;
@@ -52,6 +52,7 @@ void SpawnAsteroid(Vector2 position)
 	newAsteroid.AddComponent<Collider2D>("asteroid");
 	newAsteroid.GetComponent<Collider2D>().isActive = true;
 
+	newAsteroid.AddComponent<Health>();
 	newAsteroid.AddComponent<Asteroid>();
 }
 
@@ -99,6 +100,8 @@ void Game::Init(const char* title, int x_pos, int y_pos, int width, int height, 
 	player.GetComponent<Collider2D>().isActive = true;
 	player.AddComponent<ProjectileManager>();
 	player.AddComponent<Input>();
+	player.AddComponent<Health>();
+	player.AddComponent<Player>();
 
 	SpawnAsteroid(Vector2(300.0f, 300.0f));
 }
@@ -145,14 +148,7 @@ void Game::Update()
 		{
 			Collider2D* cc2 = colliders[j];
 
-			const bool collisionHappened = Collision::AABB(*cc1, *cc2);
-
-			if (!collisionHappened)
-			{
-				continue;
-			}
-
-
+			Collision::TryAABB(*cc1, *cc2);
 		}
 	}
 

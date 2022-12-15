@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Collision.h"
 
 bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
@@ -13,21 +12,16 @@ bool Collision::AABB(const SDL_Rect& rectA, const SDL_Rect& rectB)
 	return collisionWasDetected;
 }
 
-bool Collision::AABB(const Collider2D& colliderA, const Collider2D& colliderB)
+void Collision::TryAABB(const Collider2D& colliderA, const Collider2D& colliderB)
 {
 	if (bool eitherIsDisabled = (!colliderA.isActive) || (!colliderB.isActive))
 	{
-		return false;
+		return;
 	}
 
 	if (AABB(colliderA.GetColliderRect(), colliderB.GetColliderRect()))
 	{
 		colliderA.TriggerCollisionCallback(colliderB);
 		colliderB.TriggerCollisionCallback(colliderA);
-		return true;
-	}
-	else
-	{
-		return false;
 	}
 }
