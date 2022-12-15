@@ -1,8 +1,8 @@
 #pragma once
 #include "../Vector2.h"
-#include "../ECS/Transform.h"
-#include "../ECS/Collider.h"
-#include "../ECS/SpriteRenderer.h"
+#include "Transform.h"
+#include "Collider.h"
+#include "SpriteRenderer.h"
 #include "../WindowLoop.h"
 
 

@@ -138,6 +138,16 @@ void Game::Update()
 	Game::deltaTime = (currTime - lastTime);
 
 	ComponentManager.Refresh();
+
+	// Can't reproduce the issue, but this procedure is meant to cleanup colliders after they're deactivated
+	colliders.erase(std::remove_if(std::begin(colliders),
+		std::end(colliders),
+		[](const Collider2D* mCollider)
+		{
+			return mCollider->destroyRequired;
+		}),
+		std::end(colliders));
+
 	ComponentManager.Update();
 
 	for (int i = 0; i < colliders.size(); i++)

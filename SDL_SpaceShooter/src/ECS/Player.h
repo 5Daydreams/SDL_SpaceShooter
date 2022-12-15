@@ -12,16 +12,24 @@ private:
 	SpaceshipMotion* spaceship;
 	Health* health;
 
+	const std::function<void()> deathCallback = [this]()
+	{
+		std::cout << "Player died" << std::endl;
+		entity->Destroy();
+	};
+
 public:
 
 	void Init() override
 	{
 		spaceship = &entity->GetComponent<SpaceshipMotion>();
 		health = &entity->GetComponent<Health>();
+
+		health->SubscribeToDeathCallback(deathCallback);
 	}
 
 	void Update() override
 	{
-		
+
 	}
 };

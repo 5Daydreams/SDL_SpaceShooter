@@ -8,9 +8,18 @@
 
 class Collider2D : public Component
 {
+private:
+	int id;
+
 public:
 	std::string tag;
 	bool isActive;
+	bool destroyRequired = false;
+
+	void Destroy()
+	{
+		destroyRequired = true;
+	}
 
 	SDL_Rect colliderRect;
 	Vector2 colliderScale;
@@ -22,6 +31,7 @@ public:
 	{
 		colliderScale = Vector2(1.0f, 1.0f);
 
+		id = Game::colliders.size();
 		Game::colliders.push_back(this);
 	}
 
@@ -29,6 +39,7 @@ public:
 	{
 		colliderScale = scale;
 
+		id = Game::colliders.size();
 		Game::colliders.push_back(this);
 	}
 

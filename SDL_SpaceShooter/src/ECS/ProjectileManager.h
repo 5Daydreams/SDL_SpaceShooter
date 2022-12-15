@@ -3,7 +3,7 @@
 #include "../Vector2.h"
 #include "ECS.h"
 #include "../Game.h"
-#include "Projectiles/ProjectileInstance.h"
+#include "ProjectileInstance.h"
 
 
 const int PROJECTILE_POOL_COUNT = 20;

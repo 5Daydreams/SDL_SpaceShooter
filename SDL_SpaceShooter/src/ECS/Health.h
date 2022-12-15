@@ -9,12 +9,15 @@ private:
 	Collider2D* collider;
 
 	bool bufferDamage = false;
-	int currentHealth = 10;
+	int currentHealth;
 
 	std::vector<std::function<void()>> onDeath = std::vector<std::function<void()>>{};
 
 	const std::function<void(const Collider2D&)> collisionCallback = [this](const Collider2D& other)
 	{
+		bool thisIsPlayer = collider->tag == "player";
+		bool otherIsProjectile = other.tag == "projectile";
+
 		if (other.tag == "projectile")
 		{
 			bufferDamage = true;
@@ -23,7 +26,9 @@ private:
 
 public:
 
-	Health() {}
+	Health() : currentHealth(10) {}
+
+	Health(int health) : currentHealth(health) {}
 
 	~Health() {}
 
@@ -74,5 +79,7 @@ private:
 		{
 			callback();
 		}
+
+		entity->GetComponent<Collider2D>().destroyRequired = true;
 	}
 };

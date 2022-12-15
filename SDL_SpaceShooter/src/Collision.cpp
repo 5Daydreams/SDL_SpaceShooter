@@ -19,6 +19,20 @@ void Collision::TryAABB(const Collider2D& colliderA, const Collider2D& colliderB
 		return;
 	}
 
+	auto TagCheck = [colliderA, colliderB](std::string tagA, std::string tagB)
+	{
+		bool matching = (colliderA.tag == tagA && colliderB.tag == tagB);
+		bool flipped = (colliderB.tag == tagA && colliderA.tag == tagB);
+
+		return matching || flipped;
+	};
+
+	// This is just to ignore the player-projectile interaction. There
+	if (TagCheck("projectile", "player"))
+	{
+		return;
+	}
+
 	if (AABB(colliderA.GetColliderRect(), colliderB.GetColliderRect()))
 	{
 		colliderA.TriggerCollisionCallback(colliderB);

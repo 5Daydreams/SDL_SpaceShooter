@@ -35,7 +35,7 @@
     <ClInclude Include="src\WindowLoop.h" />
     <ClInclude Include="src\ICollider.h" />
     <ClInclude Include="src\Projectiles\ProjCollider.h" />
-    <ClInclude Include="src\Projectiles\ProjectileInstance.h" />
+    <ClInclude Include="src\ECS\ProjectileInstance.h" />
     <ClInclude Include="src\ECS\Input.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\ProjectileManager.h" />

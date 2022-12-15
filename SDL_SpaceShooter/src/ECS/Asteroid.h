@@ -16,14 +16,11 @@ private:
 	Vector2 velocity = Vector2::Zero;
 	float rotationSpeed = 0.07f;
 
-	bool bufferDamage = false;
-
 	int splitSize;
-	int currentHealth = 10;
 
 	const std::function<void()> deathCallback = [this]()
 	{
-		std::cout << "Entity died" << std::endl;
+		std::cout << "Asteroid died" << std::endl;
 		entity->Destroy();
 	};
 

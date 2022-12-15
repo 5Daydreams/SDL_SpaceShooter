@@ -10,10 +10,10 @@ private:
 	Transform* transform;
 
 	float torque;
-	float rotationSpeed = 0.1f;
+	float rotationSpeed = 0.12f;
 
 	float thrust;
-	float thrustSpeed = 0.05f;
+	float thrustSpeed = 0.10f;
 	float drag = 0.008f;
 
 	Vector2 velocity = Vector2::Zero;
