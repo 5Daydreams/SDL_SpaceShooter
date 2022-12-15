@@ -24,7 +24,6 @@ private:
 	{
 		if (other.tag == "projectile")
 		{
-			std::cout << "Asteroid took damage" << std::endl;
 			bufferDamage = true;
 		}
 	};
@@ -83,9 +82,11 @@ private:
 		bufferDamage = false;
 
 		currentHealth--;
+		std::cout << "Asteroid took damage" << std::endl;
 
 		if (currentHealth <= 0)
 		{
+			std::cout << "Asteroid died" << std::endl;
 			entity->Destroy();
 		}
 	}
